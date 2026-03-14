@@ -1,26 +1,159 @@
 @import "tailwindcss";
 
+/* ── Design Tokens ──────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:          #0c0905;
+  --bg-soft:     #111008;
+  --border:      rgba(255,255,255,0.07);
+  --border-gold: rgba(217,119,6,0.25);
+  --text:        #e8e0d0;
+  --text-muted:  #6b6456;
+  --gold:        #d97706;
+  --gold-light:  #f59e0b;
+  --glass:       rgba(15,10,5,0.60);
+  --radius-sm:   12px;
+  --radius-md:   18px;
+  --radius-lg:   28px;
+  --radius-xl:   40px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; padding: 0; margin: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-outfit, system-ui), sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Typography ─────────────────────────────────── */
+.font-display,
+h1, h2, h3 {
+  font-family: var(--font-playfair, Georgia), serif;
+}
+
+/* ── Glass Surface ──────────────────────────────── */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.glass-gold {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-gold);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 40px rgba(217,119,6,0.08);
+}
+
+/* ── Buttons ────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: #0c0905;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 12px 40px rgba(217,119,6,0.3);
+}
+.btn-primary:hover  { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 16px 48px rgba(217,119,6,0.4); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--border-gold); color: var(--gold-light); }
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.btn-icon:hover        { border-color: var(--border-gold); color: var(--gold-light); background: rgba(217,119,6,0.08); }
+.btn-icon.active       { border-color: var(--border-gold); color: var(--gold);       background: rgba(217,119,6,0.12); }
+
+/* ── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(217,119,6,0.4); }
+
+/* ── Animations ─────────────────────────────────── */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.8; }
+}
+.pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+
+/* ── Tag / Badge ────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.02);
+}
+.tag-gold {
+  border-color: var(--border-gold);
+  color: var(--gold);
+  background: rgba(217,119,6,0.06);
+}
+
+/* ── Card ───────────────────────────────────────── */
+.card {
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.card:hover { border-color: var(--border-gold); background: rgba(255,255,255,0.025); }
+
+/* ── Page Shell (nav offset) ────────────────────── */
+.page-shell {
+  padding-top: 96px; /* accounts for fixed navbar height */
 }
