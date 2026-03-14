@@ -15,6 +15,10 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Revenant — AI Developer Clone",
   description: "Your 5th teammate. Powered by NanoClaw, Moorcheh, and Tavus.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
