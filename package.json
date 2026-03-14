@@ -1,0 +1,14 @@
+{
+  "name": "revenent",
+  "version": "1.0.0",
+  "description": "Tavus video generation from lecture scripts",
+  "main": "src/tavus.js",
+  "type": "module",
+  "scripts": {
+    "generate": "node src/tavus.js",
+    "converse": "node src/converse.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
+}
