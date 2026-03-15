@@ -17,6 +17,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
+    # Public URL where users reach the app (used for OAuth callbacks & redirects)
+    public_app_url: str = "http://localhost:3000"
 
     anthropic_api_key: str = ""
     moorche_api_key: str = ""

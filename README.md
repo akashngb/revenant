@@ -27,13 +27,17 @@
 ## Features
 
 - **Integration Hub** — Connect GitHub, Slack, Discord, Jira, Linear, and Notion through Unified.to OAuth flows
-- **Habit Intelligence** — Events from connected tools are buffered, batch-evaluated by Claude, and scored as good, bad, or neutral engineering habits
+- **Habit Intelligence** — Events from connected tools are buffered in batches of 15, evaluated by Claude, and scored as good, bad, or neutral engineering habits
 - **Rolling Habit Scores** — 30-day rolling scores per engineer with breakdown by category
-- **Semantic Memory** — Moorcheh-powered vector store captures evaluated actions as long-term founder knowledge
-- **Founder Console** — Interactive Tavus video avatar paired with Claude chat, augmented by memory retrieval and context injection
+- **Three-Namespace Cognitive Memory** — Founder knowledge stored across semantic (architecture decisions), episodic (stories and pivotal moments), and procedural (frameworks and playbooks) namespaces with Ebbinghaus forgetting curve decay
+- **Railtracks LLM Proxy** — Custom LLM endpoint for Tavus that intercepts avatar conversations, enriches them with parallel multi-namespace memory retrieval, and streams responses through Claude
+- **Founder Console** — Interactive Tavus video avatar paired with Claude chat, a Memory Health Map (D3 force-graph), code viewer via NanoClaw, and a voice-reactive OGL shader orb
+- **Memory Health Visualization** — D3 force-directed graph showing all memory nodes colored by namespace, sized by decayed strength, with real-time reinforcement data
+- **NanoClaw Code Browser** — File reading and autonomous GitHub browsing powered by Browser Use API, surfaced in the Founder Console code viewer
 - **Dashboard** — Operator view with integration status, activity feed, habit charts, and promoted highlights
 - **Admin Panel** — Manage engineers, review habit logs, and override AI evaluations
 - **Onboarding Flow** — Guided setup for new engineers joining the platform
+- **Demo Seed Data** — One-click seeding of rich founder memories across all three namespaces for demos and development
 
 ---
 
@@ -63,6 +67,8 @@ flowchart TB
         ADM["Admin Panel"]
         OB["Onboarding"]
         API_PROXY["API Route Proxies"]
+        RT["Railtracks LLM Proxy"]
+        NC["NanoClaw Browser"]
     end
 
     subgraph Backend["FastAPI Backend"]
@@ -112,7 +118,11 @@ flowchart TB
     CHAT --> CL
     CHAT --> MO
     MEM --> MO
+    TV -->|"custom LLM endpoint"| RT
+    RT -->|"enrich with memory"| MO
+    RT -->|stream| CL
     FC --> TV
+    FC --> NC
 
     AUTH --> PG
     INTEG --> PG
@@ -131,6 +141,47 @@ flowchart LR
     E --> F["PostgreSQL"]
     D -->|"promoted moments"| G["Moorcheh Memory"]
     G --> H["Founder Console RAG"]
+```
+
+### Railtracks Avatar Pipeline
+
+```mermaid
+flowchart LR
+    U["Engineer speaks"] --> TV["Tavus Avatar"]
+    TV -->|"OpenAI-compatible request"| RT["Railtracks Proxy"]
+    RT --> Q1["Query semantic namespace"]
+    RT --> Q2["Query episodic namespace"]
+    RT --> Q3["Query procedural namespace"]
+    Q1 & Q2 & Q3 --> RR["Rerank by decayed strength"]
+    RR --> SP["Build system prompt with founder context"]
+    SP --> CL["Claude 3.5 Sonnet"]
+    CL -->|"streaming response"| TV
+    RT -->|"store interaction"| MO["Moorcheh Memory"]
+```
+
+---
+
+## Cognitive Memory Model
+
+Revenant's memory system is modeled after human cognition, using three distinct namespaces that map to cognitive science:
+
+| Namespace | Purpose | Example |
+|:----------|:--------|:--------|
+| **Semantic** | Architecture decisions, tech choices, conventions — the *what* | "We chose Moorcheh over Pinecone because of metadata-first design and native memory_strength support" |
+| **Episodic** | Stories, near-misses, pivotal moments — the *when and why it mattered* | "The night before launch, we discovered our webhook handler was dropping events silently" |
+| **Procedural** | Decision frameworks, heuristics, playbooks — the *how to think about it* | "When evaluating a new integration, check three things: auth complexity, webhook reliability, rate limits" |
+
+### Ebbinghaus Forgetting Curve
+
+Memories decay over time using a forgetting curve with configurable stability (default: 14 days to half-strength). Each time a memory is retrieved or reinforced, its strength resets and stability increases. This ensures frequently-relevant knowledge stays strong while stale context naturally fades.
+
+```mermaid
+flowchart LR
+    NEW["New Memory"] -->|"strength = 1.0"| STORE["Moorcheh Store"]
+    STORE --> DECAY["Strength decays over time"]
+    DECAY -->|"retrieved by query"| REINFORCE["Reinforce: strength reset, stability +1"]
+    REINFORCE --> STORE
+    DECAY -->|"never retrieved"| FADE["Fades below threshold"]
 ```
 
 ---
@@ -271,9 +322,15 @@ revenant/
 │   │   └── team/                   # Team management
 │   ├── components/                 # React components
 │   │   ├── ui/                     # Shared UI primitives
-│   │   └── bento/                  # Bento-style feature cards
+│   │   │   └── voice-powered-orb.tsx  # OGL shader orb with mic reactivity
+│   │   ├── bento/                  # Bento-style feature cards
+│   │   ├── MemoryHealthMap.tsx     # D3 force-graph memory visualization
+│   │   ├── revenant-hero-canvas.tsx   # Three.js shader landing background
+│   │   └── revenant-homepage.tsx   # Landing page layout
 │   ├── hooks/                      # Custom React hooks
 │   ├── lib/                        # Utilities and API helpers
+│   │   ├── moorchehMemory.ts       # Three-namespace memory + forgetting curve
+│   │   └── nanoClaw.ts             # NanoClaw tool execution
 │   └── types/                      # TypeScript type definitions
 ├── backend/
 │   ├── app/
@@ -345,6 +402,17 @@ revenant/
 | `POST` | `/api/memory/query` | Semantic search over memories |
 | `GET` | `/api/memory/list` | List stored memories |
 | `DELETE` | `/api/memory/:id` | Delete a memory |
+| `GET` | `/api/memory-health` | Memory nodes with strength and decay data for D3 visualization |
+
+### Railtracks & NanoClaw (Next.js API Routes)
+
+| Method | Endpoint | Description |
+|:-------|:---------|:------------|
+| `POST` | `/api/railtracks` | Tavus custom LLM endpoint — enriches with founder memory, streams Claude response |
+| `POST` | `/api/nanoclaw/browse` | Execute NanoClaw file tools or autonomous GitHub browsing via Browser Use |
+| `POST` | `/api/tavus` | Create and manage Tavus conversation sessions |
+| `POST` | `/api/openai/v1/chat/completions` | OpenAI-compatible chat proxy for Tavus |
+| `POST` | `/api/seed` | Seed demo founder memories across all three namespaces |
 
 ### Webhooks
 

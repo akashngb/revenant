@@ -8,6 +8,8 @@ RUN npm ci
 FROM node:20-alpine AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG FASTAPI_BASE_URL=http://revenant_api:8000
+ENV FASTAPI_BASE_URL=$FASTAPI_BASE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

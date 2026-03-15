@@ -34,9 +34,7 @@ SAFE_REDIRECT_PREFIXES = ("/integrations", "/onboarding", "/dashboard")
 
 
 def _frontend_base_url() -> str:
-    if settings.allowed_origins:
-        return settings.allowed_origins[0].rstrip("/")
-    return "http://127.0.0.1:3000"
+    return settings.public_app_url.rstrip("/")
 
 
 def _validate_redirect(redirect: str | None) -> str:
@@ -103,7 +101,7 @@ async def get_auth_url(
 
     safe_redirect = _validate_redirect(redirect)
     redirect_param = f"&redirect={safe_redirect}" if safe_redirect != "/integrations" else ""
-    callback_base = f"{settings.fastapi_base_url.rstrip('/')}/api/integrations/callback"
+    callback_base = f"{_frontend_base_url()}/api/integrations/callback"
     success_url = f"{callback_base}?provider={integration_type}{redirect_param}"
     failure_url = f"{callback_base}?error=auth_failed&provider={integration_type}{redirect_param}"
     return AuthUrlResponse(

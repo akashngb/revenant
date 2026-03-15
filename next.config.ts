@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
         source: "/api/admin/:path*",
         destination: `${fastApiBaseUrl}/api/admin/:path*`,
       },
+      {
+        source: "/api/chat/:path*",
+        destination: `${fastApiBaseUrl}/api/chat/:path*`,
+      },
+      {
+        source: "/api/memory/:path*",
+        destination: `${fastApiBaseUrl}/api/memory/:path*`,
+      },
     ];
   },
 };

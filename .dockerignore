@@ -4,4 +4,6 @@ node_modules
 backend
 tools
 *.md
-.env.example
+.env
+.env.*
+!.env.example

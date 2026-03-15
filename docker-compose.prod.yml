@@ -1,4 +1,41 @@
 services:
+  symbiote-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: symbiote
+      POSTGRES_PASSWORD: symbiote
+      POSTGRES_DB: symbiote
+    volumes:
+      - symbiote-db-data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  symbiote-redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - internal
+
+  revenant_api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: revenant_api
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://symbiote:symbiote@symbiote-db:5432/symbiote
+      - REDIS_URL=redis://symbiote-redis:6379/0
+    depends_on:
+      - symbiote-db
+      - symbiote-redis
+    networks:
+      - internal
+
   revenant_web:
     build:
       context: .
@@ -10,13 +47,22 @@ services:
     env_file:
       - ./.env
     environment:
+      # FASTAPI_BASE_URL is baked at build time via Dockerfile ARG (default: http://revenant_api:8000)
       - VIRTUAL_HOST=astrali.tech,www.astrali.tech
       - LETSENCRYPT_HOST=astrali.tech,www.astrali.tech
       - VIRTUAL_PORT=3000
       - LETSENCRYPT_EMAIL=omarmgmi08@gmail.com
+    depends_on:
+      - revenant_api
     networks:
+      - internal
       - webnet
 
+volumes:
+  symbiote-db-data:
+  redis-data:
+
 networks:
+  internal:
   webnet:
     external: true
