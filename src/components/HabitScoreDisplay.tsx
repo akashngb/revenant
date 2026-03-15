@@ -36,7 +36,7 @@ export default function HabitScoreDisplay({ score }: HabitScoreDisplayProps) {
     <div className={`glass flex flex-col gap-4 rounded-[28px] border p-8 ${tone.border}`}>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Habit score</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Habit health score</p>
           <h2 className="mt-3 text-5xl font-semibold text-[var(--text)]">{Math.round(score)}</h2>
         </div>
         <div className={`rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] ${tone.border} ${tone.bg} ${tone.text}`}>
@@ -44,7 +44,7 @@ export default function HabitScoreDisplay({ score }: HabitScoreDisplayProps) {
         </div>
       </div>
       <p className="max-w-md text-sm leading-6 text-[var(--text-muted)]">
-        This score tracks the rolling 30-day balance of strong habits, weak habits, and neutral activity across connected tools.
+        Revenent uses this rolling 30-day signal to surface strong patterns, weak patterns, and the activity most likely to be promoted into company memory.
       </p>
     </div>
   );

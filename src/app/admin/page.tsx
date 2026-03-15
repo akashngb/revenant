@@ -79,10 +79,10 @@ export default function AdminPage() {
       <Navbar />
       <main className="mx-auto max-w-7xl px-6 py-14">
         <div>
-          <span className="tag tag-gold">Admin control</span>
-          <h1 className="mt-5 text-5xl font-semibold leading-tight">Review labels, scores, and engineer trends.</h1>
+          <span className="tag tag-gold">Review control</span>
+          <h1 className="mt-5 text-5xl font-semibold leading-tight">Audit labels, promotions, and memory quality.</h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--text-muted)]">
-            This surface is the manual override loop for the evaluator. Adjust labels, inspect team-wide drift, and keep the training signal defensible.
+            This is Revenent's manual override loop. Review incoming signals, correct labels, and keep the promotion engine defensible before company memory hardens around bad assumptions.
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function AdminPage() {
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Team overview</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[var(--text)]">Engineers</h2>
+                  <h2 className="mt-2 text-2xl font-semibold text-[var(--text)]">Observed engineers</h2>
                 </div>
                 <span className="tag">{engineers.length} engineers</span>
               </div>
@@ -131,7 +131,7 @@ export default function AdminPage() {
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Manual review</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[var(--text)]">Habit logs</h2>
+                  <h2 className="mt-2 text-2xl font-semibold text-[var(--text)]">Behavior batches</h2>
                 </div>
                 <div className="grid gap-3 md:grid-cols-3">
                   <select className="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.03)] px-4 py-3 text-sm text-[var(--text)] outline-none" value={labelFilter} onChange={(event) => setLabelFilter(event.target.value)}>

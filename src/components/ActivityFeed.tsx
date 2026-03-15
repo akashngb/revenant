@@ -20,7 +20,7 @@ function labelTone(label: HabitLabel) {
   }
 }
 
-export default function ActivityFeed({ items, title = "Recent activity" }: ActivityFeedProps) {
+export default function ActivityFeed({ items, title = "Recent observed activity" }: ActivityFeedProps) {
   return (
     <section className="glass flex flex-col gap-5 rounded-[28px] p-6">
       <div className="flex items-center justify-between gap-3">
@@ -34,7 +34,7 @@ export default function ActivityFeed({ items, title = "Recent activity" }: Activ
       <div className="flex max-h-[420px] flex-col gap-4 overflow-y-auto pr-1">
         {items.length === 0 ? (
           <div className="rounded-[20px] border border-dashed border-[var(--border)] p-5 text-sm text-[var(--text-muted)]">
-            No activity yet. Connect GitHub, let the scheduler pull events, and this feed will populate automatically.
+            No source activity yet. Connect GitHub through Nango and Revenent will start building both personal and company memory from incoming events.
           </div>
         ) : (
           items.map((item) => (
@@ -43,7 +43,7 @@ export default function ActivityFeed({ items, title = "Recent activity" }: Activ
                 <div>
                   <p className="text-sm font-medium text-[var(--text)]">{item.summary || item.action_type}</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                    {item.source} · {new Date(item.created_at).toLocaleString()}
+                    {item.source} | {new Date(item.created_at).toLocaleString()}
                   </p>
                 </div>
                 <span className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] ${labelTone(item.label)}`}>
