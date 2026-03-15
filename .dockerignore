@@ -1,0 +1,7 @@
+node_modules
+.next
+.git
+backend
+tools
+*.md
+.env.example

@@ -30,14 +30,24 @@ DEFAULT_PROVIDERS = ("github", "discord", "slack")
 SUPPORTED_PROVIDERS = frozenset({"github", "discord", "slack", "jira", "linear", "notion"})
 
 
+SAFE_REDIRECT_PREFIXES = ("/integrations", "/onboarding", "/dashboard")
+
+
 def _frontend_base_url() -> str:
     if settings.allowed_origins:
         return settings.allowed_origins[0].rstrip("/")
     return "http://127.0.0.1:3000"
 
 
-def _frontend_integrations_url(**params: str) -> str:
-    base_url = f"{_frontend_base_url()}/integrations"
+def _validate_redirect(redirect: str | None) -> str:
+    """Return a safe relative path, defaulting to /integrations."""
+    if redirect and redirect.startswith(SAFE_REDIRECT_PREFIXES):
+        return redirect
+    return "/integrations"
+
+
+def _frontend_redirect_url(redirect: str = "/integrations", **params: str) -> str:
+    base_url = f"{_frontend_base_url()}{_validate_redirect(redirect)}"
     filtered_params = {key: value for key, value in params.items() if value}
     if not filtered_params:
         return base_url
@@ -69,6 +79,7 @@ async def ensure_default_integrations(db: AsyncSession, engineer_id: int) -> lis
 @router.post("/auth-url", response_model=AuthUrlResponse)
 async def get_auth_url(
     provider: str = Query(..., min_length=1),
+    redirect: str = Query("/integrations"),
     current_engineer: Engineer = Depends(get_current_engineer),
 ) -> AuthUrlResponse:
     """Generate a Unified authorization URL for a provider."""
@@ -90,9 +101,11 @@ async def get_auth_url(
     if integration_type is None:
         raise HTTPException(status_code=400, detail=f"Unknown provider: {provider}")
 
+    safe_redirect = _validate_redirect(redirect)
+    redirect_param = f"&redirect={safe_redirect}" if safe_redirect != "/integrations" else ""
     callback_base = f"{settings.fastapi_base_url.rstrip('/')}/api/integrations/callback"
-    success_url = f"{callback_base}?provider={integration_type}"
-    failure_url = f"{callback_base}?error=auth_failed&provider={integration_type}"
+    success_url = f"{callback_base}?provider={integration_type}{redirect_param}"
+    failure_url = f"{callback_base}?error=auth_failed&provider={integration_type}{redirect_param}"
     return AuthUrlResponse(
         auth_url=build_auth_url(
             integration_type,
@@ -117,11 +130,12 @@ async def integration_callback(
     state: str | None = None,
     error: str | None = None,
     provider: str | None = None,
+    redirect: str = "/integrations",
     db: AsyncSession = Depends(get_db),
 ):
-    """Persist the Unified connection and return the engineer to the integrations page."""
+    """Persist the Unified connection and return the engineer to the frontend."""
     if error or not id or not state:
-        return RedirectResponse(url=_frontend_integrations_url(error=error or "auth_failed"))
+        return RedirectResponse(url=_frontend_redirect_url(redirect, error=error or "auth_failed"))
 
     try:
         engineer_id = int(state)
@@ -141,7 +155,7 @@ async def integration_callback(
         or "unknown"
     ).lower()
     if resolved_provider not in SUPPORTED_PROVIDERS:
-        return RedirectResponse(url=_frontend_integrations_url(error="unknown_provider"))
+        return RedirectResponse(url=_frontend_redirect_url(redirect, error="unknown_provider"))
 
     result = await db.execute(
         select(Integration).where(
@@ -170,7 +184,7 @@ async def integration_callback(
     except Exception:
         logger.warning("Failed to register Unified webhooks for %s", connection_id, exc_info=True)
 
-    return RedirectResponse(url=_frontend_integrations_url(connected=resolved_provider))
+    return RedirectResponse(url=_frontend_redirect_url(redirect, connected=resolved_provider))
 
 
 @router.get("/slack/members", response_model=list[TeamMemberItem])

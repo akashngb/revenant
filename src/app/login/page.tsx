@@ -1,40 +1,47 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrainCircuit } from "lucide-react";
-import { setAccessToken, AUTH_ENGINEER_KEY } from "@/lib/api";
+import { apiFetch, setAccessToken, storeEngineerSnapshot } from "@/lib/api";
+import type { LoginResponse } from "@/types/symbiote";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [nextPath, setNextPath] = useState("/dashboard");
 
-  const handleSubmit = (e: FormEvent) => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setNextPath(params.get("next") || "/dashboard");
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError(null);
 
-    const name = email.split("@")[0];
-    const mockUser = {
-      id: 1,
-      email,
-      username: name,
-      full_name: name.charAt(0).toUpperCase() + name.slice(1),
-      bio: "",
-      habit_score: 82,
-      onboarding_complete: true,
-      is_admin: true,
-      created_at: new Date().toISOString(),
-    };
+    try {
+      const login = await apiFetch<LoginResponse>("/api/auth/login", {
+        method: "POST",
+        auth: false,
+        json: { email, password },
+      });
 
-    setAccessToken("rev_token_" + Date.now());
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(AUTH_ENGINEER_KEY, JSON.stringify(mockUser));
+      setAccessToken(login.access_token);
+      storeEngineerSnapshot(login);
+      router.push(nextPath);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error ? caughtError.message : "Invalid email or password"
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    setTimeout(() => router.push("/dashboard"), 300);
   };
 
   return (
@@ -82,7 +89,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="omar@trellis.com"
+                placeholder="Enter email"
                 required
                 className="font-ui-mono"
                 style={{
@@ -115,6 +122,19 @@ export default function LoginPage() {
                 }}
               />
             </label>
+
+            {error && (
+              <p
+                className="font-ui-mono text-sm text-[#ff6b6b]"
+                style={{
+                  padding: "12px 16px",
+                  border: "1px solid rgba(255,107,107,0.3)",
+                  background: "rgba(255,107,107,0.08)",
+                }}
+              >
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
