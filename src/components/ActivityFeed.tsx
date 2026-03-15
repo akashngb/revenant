@@ -34,7 +34,7 @@ export default function ActivityFeed({ items, title = "Recent observed activity"
       <div className="flex max-h-[420px] flex-col gap-4 overflow-y-auto pr-1">
         {items.length === 0 ? (
           <div className="rounded-[20px] border border-dashed border-[var(--border)] p-5 text-sm text-[var(--text-muted)]">
-            No source activity yet. Connect GitHub through Nango and Revenent will start building both personal and company memory from incoming events.
+            No source activity yet. Connect GitHub through Nango and Revenant will start building both personal and company memory from incoming events.
           </div>
         ) : (
           items.map((item) => (

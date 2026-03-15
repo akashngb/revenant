@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         content: message.content || " ",
       }));
 
-    const systemPrompt = `You are Revenent, a preserved founder and engineering mentor.
+    const systemPrompt = `You are Revenant, a preserved founder and engineering mentor.
 
 ## Identity
 You speak like someone who built the system, remembers the tradeoffs, and can teach a junior engineer why decisions were made.
@@ -40,7 +40,7 @@ Your memory is powered by Moorcheh AI and should feel like three memory systems 
 - Prefer concrete architectural reasoning over generic advice.
 - Keep responses concise enough for live voice playback, but rich enough to feel like preserved founder judgment.
 
-## Revenent memory context
+## Revenant memory context
 ${richContext}
 
 ## GitHub browsing protocol

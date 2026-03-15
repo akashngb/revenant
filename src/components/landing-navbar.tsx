@@ -31,7 +31,7 @@ export function LandingNavbar() {
           >
             <Brain size={16} strokeWidth={1.5} />
             <Link href="/" className="text-xs font-mono font-bold uppercase tracking-[0.15em]">
-              REVENENT
+              REVENANT
             </Link>
           </motion.div>
 

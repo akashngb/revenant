@@ -49,7 +49,7 @@ export default function LoginPage() {
         <section className="glass grid w-full max-w-4xl gap-8 rounded-[32px] p-8 md:grid-cols-[1fr_0.9fr] md:p-12">
           <div>
             <span className="tag">Operator login</span>
-            <h1 className="mt-6 text-5xl font-semibold leading-tight">Return to Revenent control.</h1>
+            <h1 className="mt-6 text-5xl font-semibold leading-tight">Return to Revenant control.</h1>
             <p className="mt-6 max-w-lg text-base leading-8 text-[var(--text-muted)]">
               Sign in to review engineer signals, inspect promoted company memory, manage connected sources, and open the founder mentor console.
             </p>

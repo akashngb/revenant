@@ -1,5 +1,5 @@
-import { RevenentHomepage } from "@/components/revenent-homepage";
+import { RevenantHomepage } from "@/components/revenant-homepage";
 
 export default function Page() {
-  return <RevenentHomepage />;
+  return <RevenantHomepage />;
 }

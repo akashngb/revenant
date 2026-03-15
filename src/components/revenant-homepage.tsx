@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { RevenentDemoPanel } from "@/components/revenent-demo-panel";
+import { RevenantDemoPanel } from "@/components/revenant-demo-panel";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -45,7 +45,7 @@ const pillars = [
     icon: Network,
     title: "Cross-tool recall instead of scattered context",
     description:
-      "Revenent stitches source material into one queryable memory layer instead of another disconnected dashboard.",
+      "Revenant stitches source material into one queryable memory layer instead of another disconnected dashboard.",
   },
   {
     icon: ShieldCheck,
@@ -118,7 +118,7 @@ function Nav() {
             <span className="flex size-6 items-center justify-center rounded-full bg-black text-white">
               <BrainCircuit size={14} />
             </span>
-            <span className="font-medium uppercase">REVENENT</span>
+            <span className="font-medium uppercase">REVENANT</span>
           </Link>
 
           <div className="hidden items-center gap-5 lg:flex">
@@ -229,10 +229,10 @@ function LogoMarquee() {
 }
 
 function DemoPanel() {
-  return <RevenentDemoPanel />;
+  return <RevenantDemoPanel />;
 }
 
-export function RevenentHomepage() {
+export function RevenantHomepage() {
   return (
     <div className="rev-page bg-[#050505] text-white">
       <Nav />
@@ -252,7 +252,7 @@ export function RevenentHomepage() {
                   <br className="md:hidden" /> what to do.
                 </h1>
                 <p className="font-display text-4xl leading-[0.95] text-white md:whitespace-nowrap md:text-5xl md:leading-[0.87] lg:text-[64px]">
-                  Revenent keeps the why.
+                  Revenant keeps the why.
                 </p>
               </div>
               <p className="max-w-[540px] text-center text-base leading-[1.4] text-white/50 md:text-lg md:leading-[1.2]">
@@ -305,7 +305,7 @@ export function RevenentHomepage() {
                     A system that listens where engineering judgment actually happens
                   </h3>
                   <p className="mt-4 max-w-[500px] text-base leading-[1.4] text-black/65">
-                    Revenent joins the tools your team already uses and continuously indexes reasoning, approvals, tradeoffs, and incident context.
+                    Revenant joins the tools your team already uses and continuously indexes reasoning, approvals, tradeoffs, and incident context.
                   </p>
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     {["Architecture debates", "Rollback rationale", "Runbook patches", "Vendor escalations"].map((item) => (
@@ -491,7 +491,7 @@ export function RevenentHomepage() {
                 href="/signup"
                 className="mt-2 flex h-10 items-center justify-center bg-black px-6 font-ui-mono text-sm tracking-[-0.28px] text-white transition-colors hover:bg-black/85"
               >
-                START REVENENT TODAY
+                START REVENANT TODAY
               </Link>
             </div>
           </div>

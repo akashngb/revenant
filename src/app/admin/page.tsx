@@ -82,7 +82,7 @@ export default function AdminPage() {
           <span className="tag tag-gold">Review control</span>
           <h1 className="mt-5 text-5xl font-semibold leading-tight">Audit labels, promotions, and memory quality.</h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--text-muted)]">
-            This is Revenent's manual override loop. Review incoming signals, correct labels, and keep the promotion engine defensible before company memory hardens around bad assumptions.
+            This is Revenant's manual override loop. Review incoming signals, correct labels, and keep the promotion engine defensible before company memory hardens around bad assumptions.
           </p>
         </div>
 

@@ -24,10 +24,10 @@ export function Footer() {
       <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-mono font-bold uppercase tracking-[0.15em] text-foreground">
-            REVENENT
+            REVENANT
           </span>
           <span className="text-[10px] font-mono tracking-widest text-muted-foreground">
-            {"(C) 2026 Revenent. Engineering memory that outlives its engineers."}
+            {"(C) 2026 Revenant. Engineering memory that outlives its engineers."}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-6">

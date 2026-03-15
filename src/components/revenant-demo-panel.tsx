@@ -138,7 +138,7 @@ const demoScenarios: DemoScenario[] = [
       { icon: Database, name: "Jira", meta: "OAuth 2.0", status: "Connected" },
     ],
     execute: {
-      tool: "REVENENT_PROMOTE_MEMORY",
+      tool: "REVENANT_PROMOTE_MEMORY",
       session: "sx-auth9",
       rows: [
         ["memory", "Auth deploy retry decision"],
@@ -147,21 +147,21 @@ const demoScenarios: DemoScenario[] = [
       status: "200 OK - memory promoted",
     },
     agent: {
-      agent: "Revenent Mentor",
+      agent: "Revenant Mentor",
       provider: "OpenAI",
       model: "gpt-5",
     },
     sandbox: "memory graph - source-grounded recall",
     messages: [
-      { id: "capture", kind: "tool", text: "REVENENT_CAPTURE_PIPELINE", panel: "capture" },
-      { id: "connections", kind: "tool", text: "REVENENT_MANAGE_CONNECTIONS", panel: "connections" },
-      { id: "sandbox", kind: "tool", text: "REVENENT_SANDBOX", panel: "sandbox" },
+      { id: "capture", kind: "tool", text: "REVENANT_CAPTURE_PIPELINE", panel: "capture" },
+      { id: "connections", kind: "tool", text: "REVENANT_MANAGE_CONNECTIONS", panel: "connections" },
+      { id: "sandbox", kind: "tool", text: "REVENANT_SANDBOX", panel: "sandbox" },
       {
         id: "answer",
         kind: "assistant",
-        text: "Revenent found the decision in GitHub review threads, a Slack incident channel, and the Jira follow-up. The team kept sequencing coupled because queue lag caused token expiry during blue-green deploys.",
+        text: "Revenant found the decision in GitHub review threads, a Slack incident channel, and the Jira follow-up. The team kept sequencing coupled because queue lag caused token expiry during blue-green deploys.",
       },
-      { id: "execute", kind: "tool", text: "REVENENT_EXECUTE_MEMORY", panel: "execute" },
+      { id: "execute", kind: "tool", text: "REVENANT_EXECUTE_MEMORY", panel: "execute" },
       {
         id: "result",
         kind: "assistant",
@@ -208,7 +208,7 @@ const demoScenarios: DemoScenario[] = [
       { icon: GitPullRequestArrow, name: "GitHub", meta: "GitHub App", status: "Connected" },
     ],
     execute: {
-      tool: "REVENENT_PROMOTE_MEMORY",
+      tool: "REVENANT_PROMOTE_MEMORY",
       session: "sx-bill4",
       rows: [
         ["memory", "Billing retry safety change"],
@@ -217,21 +217,21 @@ const demoScenarios: DemoScenario[] = [
       status: "200 OK - memory promoted",
     },
     agent: {
-      agent: "Revenent Mentor",
+      agent: "Revenant Mentor",
       provider: "OpenAI",
       model: "gpt-5",
     },
     sandbox: "memory graph - incident reconstruction",
     messages: [
-      { id: "capture", kind: "tool", text: "REVENENT_CAPTURE_PIPELINE", panel: "capture" },
-      { id: "connections", kind: "tool", text: "REVENENT_MANAGE_CONNECTIONS", panel: "connections" },
-      { id: "sandbox", kind: "tool", text: "REVENENT_SANDBOX", panel: "sandbox" },
+      { id: "capture", kind: "tool", text: "REVENANT_CAPTURE_PIPELINE", panel: "capture" },
+      { id: "connections", kind: "tool", text: "REVENANT_MANAGE_CONNECTIONS", panel: "connections" },
+      { id: "sandbox", kind: "tool", text: "REVENANT_SANDBOX", panel: "sandbox" },
       {
         id: "answer",
         kind: "assistant",
         text: "The team disabled immediate retries after finding they could replay against stale payment intents. Finance approved a slower retry window until idempotency checks shipped.",
       },
-      { id: "execute", kind: "tool", text: "REVENENT_EXECUTE_MEMORY", panel: "execute" },
+      { id: "execute", kind: "tool", text: "REVENANT_EXECUTE_MEMORY", panel: "execute" },
       {
         id: "result",
         kind: "assistant",
@@ -278,7 +278,7 @@ const demoScenarios: DemoScenario[] = [
       { icon: MessageSquareShare, name: "Release Chat", meta: "OAuth 2.0", status: "Connected" },
     ],
     execute: {
-      tool: "REVENENT_PROMOTE_MEMORY",
+      tool: "REVENANT_PROMOTE_MEMORY",
       session: "sx-srch2",
       rows: [
         ["memory", "Search shard split postponement"],
@@ -287,21 +287,21 @@ const demoScenarios: DemoScenario[] = [
       status: "200 OK - memory promoted",
     },
     agent: {
-      agent: "Revenent Mentor",
+      agent: "Revenant Mentor",
       provider: "OpenAI",
       model: "gpt-5",
     },
     sandbox: "memory graph - architecture recall",
     messages: [
-      { id: "capture", kind: "tool", text: "REVENENT_CAPTURE_PIPELINE", panel: "capture" },
-      { id: "connections", kind: "tool", text: "REVENENT_MANAGE_CONNECTIONS", panel: "connections" },
-      { id: "sandbox", kind: "tool", text: "REVENENT_SANDBOX", panel: "sandbox" },
+      { id: "capture", kind: "tool", text: "REVENANT_CAPTURE_PIPELINE", panel: "capture" },
+      { id: "connections", kind: "tool", text: "REVENANT_MANAGE_CONNECTIONS", panel: "connections" },
+      { id: "sandbox", kind: "tool", text: "REVENANT_SANDBOX", panel: "sandbox" },
       {
         id: "answer",
         kind: "assistant",
-        text: "Revenent found that the plan was approved conditionally, but storage growth outpaced the original estimate. The split was delayed until the new rollback window and runbook were in place.",
+        text: "Revenant found that the plan was approved conditionally, but storage growth outpaced the original estimate. The split was delayed until the new rollback window and runbook were in place.",
       },
-      { id: "execute", kind: "tool", text: "REVENENT_EXECUTE_MEMORY", panel: "execute" },
+      { id: "execute", kind: "tool", text: "REVENANT_EXECUTE_MEMORY", panel: "execute" },
       {
         id: "result",
         kind: "assistant",
@@ -327,7 +327,7 @@ function getPanelClass(active: boolean, completed: boolean) {
   return "border-white/[0.08] bg-[#141414]/50 opacity-70";
 }
 
-export function RevenentDemoPanel() {
+export function RevenantDemoPanel() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [stepIndex, setStepIndex] = useState(-1);
@@ -447,7 +447,7 @@ export function RevenentDemoPanel() {
             className={`border p-4 ${getPanelClass(connectionsPanel.active, connectionsPanel.completed)}`}
           >
             <div className="font-ui-mono text-[11px] uppercase tracking-[0.16em] text-white/22">
-              REVENENT_MANAGE_CONNECTIONS
+              REVENANT_MANAGE_CONNECTIONS
             </div>
             <div className="mt-4 font-ui-mono text-[11px] uppercase tracking-[0.08em] text-white/18">
               workspace_id: ws_9x2klm7
@@ -483,7 +483,7 @@ export function RevenentDemoPanel() {
             className={`border p-4 ${getPanelClass(executePanel.active, executePanel.completed)}`}
           >
             <div className="flex items-center justify-between font-ui-mono text-[11px] uppercase tracking-[0.16em] text-white/22">
-              <span>REVENENT_EXECUTE_MEMORY</span>
+              <span>REVENANT_EXECUTE_MEMORY</span>
               <span>session: {scenario.execute.session}</span>
             </div>
             <div className="mt-4 border border-white/6 bg-[#121214] px-4 py-3 font-ui-mono text-[11px] uppercase tracking-[0.08em] text-white/18">
@@ -536,7 +536,7 @@ export function RevenentDemoPanel() {
           className="mx-auto border border-white/10 bg-[#0f0f10] px-5 py-4"
         >
           <div className="flex items-center justify-between font-ui-mono text-[11px] uppercase tracking-[0.14em] text-white/24">
-            <span>REVENENT_SANDBOX</span>
+            <span>REVENANT_SANDBOX</span>
             <span>{scenario.sandbox}</span>
           </div>
         </motion.div>
@@ -555,7 +555,7 @@ export function RevenentDemoPanel() {
             className={`border p-4 ${getPanelClass(capturePanel.active, capturePanel.completed)}`}
           >
             <div className="font-ui-mono text-[11px] uppercase tracking-[0.16em] text-white/22">
-              REVENENT_CAPTURE_PIPELINE
+              REVENANT_CAPTURE_PIPELINE
             </div>
             <div className="mt-4 flex items-center gap-2 border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 font-ui-mono text-[11px] text-white/22">
               <Search size={12} />
@@ -615,7 +615,7 @@ export function RevenentDemoPanel() {
             variants={reveal}
             className="flex flex-col border border-white/[0.08] bg-[#141414]/50 p-4 font-ui-mono text-xs"
           >
-            <h2 className="mb-4 text-sm uppercase tracking-wider text-white/60">Watch Revenent In Action</h2>
+            <h2 className="mb-4 text-sm uppercase tracking-wider text-white/60">Watch Revenant In Action</h2>
             <button
               type="button"
               className="flex w-fit items-center justify-center bg-white px-3 py-1.5 text-xs tracking-[-0.28px] text-black transition-colors hover:bg-white/90"
@@ -635,7 +635,7 @@ export function RevenentDemoPanel() {
         >
           <div className="flex items-center justify-center gap-2 px-5 py-3">
             <BrainCircuit size={16} className="text-white/80" />
-            <span className="text-[13px] font-medium text-white/85">Revenent Mentor</span>
+            <span className="text-[13px] font-medium text-white/85">Revenant Mentor</span>
           </div>
           <div className="flex h-[380px] flex-col gap-4 overflow-hidden px-5 pt-5 pb-3">
             <div className="flex justify-end opacity-35">
@@ -734,7 +734,7 @@ export function RevenentDemoPanel() {
               connectionsPanel.completed,
             )}`}
           >
-            <div className="mb-3 text-[11px] uppercase tracking-wider text-white/40">REVENENT_MANAGE_CONNECTIONS</div>
+            <div className="mb-3 text-[11px] uppercase tracking-wider text-white/40">REVENANT_MANAGE_CONNECTIONS</div>
             <div className="mb-5 text-[11px] uppercase tracking-wider text-white/30">WORKSPACE_ID: ws_9x2klm7</div>
             <div className="flex flex-col gap-2">
               {scenario.connections.map((connection) => {
@@ -770,7 +770,7 @@ export function RevenentDemoPanel() {
             )}`}
           >
             <div className="mb-3 flex items-center justify-between">
-              <span className="text-[11px] uppercase tracking-wider text-white/40">REVENENT_EXECUTE_MEMORY</span>
+              <span className="text-[11px] uppercase tracking-wider text-white/40">REVENANT_EXECUTE_MEMORY</span>
               <span className="text-[10px] text-white/25">SESSION: {scenario.execute.session}</span>
             </div>
             <div className="flex flex-col gap-2">
@@ -828,7 +828,7 @@ export function RevenentDemoPanel() {
       >
         <div className="overflow-hidden border border-white/[0.08] bg-[#141414]/50 p-4 font-ui-mono text-xs">
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-[10px] uppercase tracking-wider text-white/30">REVENENT_SANDBOX</div>
+            <div className="text-[10px] uppercase tracking-wider text-white/30">REVENANT_SANDBOX</div>
             <div className="flex items-center gap-1.5 text-[9px] text-white/20">
               <span className="h-1.5 w-1.5 rounded-full bg-white/10" />
               {scenario.sandbox}

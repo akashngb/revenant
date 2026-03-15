@@ -106,7 +106,7 @@ app.post('/api/start-conversation', upload.single('script'), async (req, res) =>
       method: 'POST',
       headers,
       body: JSON.stringify({
-        persona_name: 'Revenent Lecture Tutor',
+        persona_name: 'Revenant Lecture Tutor',
         system_prompt: `You are a knowledgeable, friendly lecture tutor. Use the following lecture script as your core knowledge base. Answer questions about the material, explain concepts in depth, and engage the student in a natural conversation. Be concise but thorough.\n\nLECTURE SCRIPT:\n${script}`,
         default_replica_id: TAVUS_REPLICA_ID,
         layers: { llm: { model: 'tavus-gemini-2.5-flash' } },
@@ -148,5 +148,5 @@ app.post('/api/start-conversation', upload.single('script'), async (req, res) =>
 // ── Start ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`\n🚀  Revenent server running at http://localhost:${PORT}\n`);
+  console.log(`\n🚀  Revenant server running at http://localhost:${PORT}\n`);
 });

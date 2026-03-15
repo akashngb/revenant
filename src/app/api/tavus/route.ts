@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     if (!personaId) {
       console.log("[TAVUS] No saved persona - creating new one...");
 
-      const systemPrompt = `You are Revenent, a preserved founder and engineering mentor.
+      const systemPrompt = `You are Revenant, a preserved founder and engineering mentor.
 You exist to help junior engineers understand architecture, tradeoffs, conventions, and the stories behind past decisions.
 You have access to semantic memory, episodic memory, and procedural memory.
 Explain not just what the team chose, but why, what alternatives were debated, and what almost went wrong.
@@ -28,7 +28,7 @@ Keep responses concise and conversational because you are rendered through live 
         method: "POST",
         headers,
         body: JSON.stringify({
-          persona_name: "Revenent Founder Mentor",
+          persona_name: "Revenant Founder Mentor",
           system_prompt: systemPrompt,
           default_replica_id: replicaId,
           layers: {
@@ -57,7 +57,7 @@ Keep responses concise and conversational because you are rendered through live 
       body: JSON.stringify({
         replica_id: replicaId,
         persona_id: personaId,
-        conversation_name: "Revenent Founder Session",
+        conversation_name: "Revenant Founder Session",
         conversational_context:
           "You are mentoring a junior engineer. Use founder memory, company memory, repository context, and preserved stories to explain architecture and engineering decisions.",
         properties: {

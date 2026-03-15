@@ -9,7 +9,7 @@ const features = [
   {
     icon: Brain,
     title: "It watches how great engineers work",
-    desc: "Revenent learns from real engineering behavior instead of asking teams to keep brittle documentation perfectly maintained.",
+    desc: "Revenant learns from real engineering behavior instead of asking teams to keep brittle documentation perfectly maintained.",
   },
   {
     icon: BookOpen,
@@ -42,12 +42,12 @@ export default function FeaturesPage() {
         <div style={{ marginBottom: 72 }}>
           <span style={{ display: "block", fontSize: 10, fontWeight: 700, letterSpacing: "0.35em", textTransform: "uppercase", color: "#d97706", marginBottom: 16 }}>The story</span>
           <h1 style={{ fontFamily: "var(--font-playfair, Georgia)", fontStyle: "italic", fontSize: "clamp(40px, 5vw, 64px)", lineHeight: 1.1, marginBottom: 20 }}>
-            Revenent is about
+            Revenant is about
             <br />
             <span style={{ color: "#d97706" }}>preserving what makes a team great</span>.
           </h1>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: "#6b6456", maxWidth: 760 }}>
-            Keep the message simple: Revenent learns from your engineers, builds living company memory,
+            Keep the message simple: Revenant learns from your engineers, builds living company memory,
             and lets founder-level judgment remain available even after key people leave.
           </p>
         </div>

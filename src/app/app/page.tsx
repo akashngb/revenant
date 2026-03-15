@@ -37,7 +37,7 @@ export default function AppDashboard() {
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
 
   const [logs, setLogs] = useState<LogItem[]>([
-    { id: 1, text: "REVENENT founder session initialized.", type: "info" },
+    { id: 1, text: "REVENANT founder session initialized.", type: "info" },
     { id: 2, text: "Moorcheh multi-memory recall online.", type: "success" },
     { id: 3, text: "Founder mentor channel standing by.", type: "success" },
   ]);
@@ -180,9 +180,9 @@ export default function AppDashboard() {
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <div style={{ position: "relative", width: 44, height: 44 }}>
-              <Image src="/logo.png" alt="Revenent" fill style={{ objectFit: "contain" }} />
+              <Image src="/logo.png" alt="Revenant" fill style={{ objectFit: "contain" }} />
             </div>
-            <span style={{ color: C.text, fontWeight: 800, fontSize: 12, letterSpacing: "0.3em", textTransform: "uppercase" }}>REVENENT</span>
+            <span style={{ color: C.text, fontWeight: 800, fontSize: 12, letterSpacing: "0.3em", textTransform: "uppercase" }}>REVENANT</span>
           </Link>
           <div style={{ width: 1, height: 24, background: C.border }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

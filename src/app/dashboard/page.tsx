@@ -58,7 +58,7 @@ export default function DashboardPage() {
             <span className="tag tag-gold">Operator dashboard</span>
             <h1 className="mt-5 text-5xl font-semibold leading-tight">Team memory at a glance.</h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--text-muted)]">
-              This is the working view of what Revenent is learning: team signals, promoted memory, and the patterns worth keeping.
+              This is the working view of what Revenant is learning: team signals, promoted memory, and the patterns worth keeping.
             </p>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function DashboardPage() {
                 <div className="mt-6 flex flex-col gap-4">
                   {promoted.length === 0 ? (
                     <div className="rounded-[20px] border border-dashed border-[var(--border)] p-5 text-sm leading-6 text-[var(--text-muted)]">
-                      No patterns have been promoted yet. When Revenent detects a best moment in a labeled batch, it will appear here for review.
+                      No patterns have been promoted yet. When Revenant detects a best moment in a labeled batch, it will appear here for review.
                     </div>
                   ) : (
                     promoted.map((item) => (

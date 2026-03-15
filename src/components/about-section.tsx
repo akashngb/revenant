@@ -122,7 +122,7 @@ function MemoryNetworkViz() {
       viewBox="0 0 560 360"
       className="w-full h-full"
       role="img"
-      aria-label="Revenent memory network: integrations feeding into memory core, powering mentor and recall"
+      aria-label="Revenant memory network: integrations feeding into memory core, powering mentor and recall"
     >
       {/* Grid lines */}
       {Array.from({ length: 24 }).map((_, i) => (
@@ -322,7 +322,7 @@ export function AboutSection() {
         className="flex items-center gap-4 mb-8"
       >
         <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-mono">
-          {"// SECTION: ABOUT_REVENENT"}
+          {"// SECTION: ABOUT_REVENANT"}
         </span>
         <div className="flex-1 border-t border-border" />
         <BlinkDot />
