@@ -19,23 +19,33 @@ interface NavBarProps {
 
 export function NavBar({ items, className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const path = window.location.pathname;
-      const match = items.find((item) => item.url === path);
-      if (match) setActiveTab(match.name);
-    }
-  }, [items]);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div
       className={cn(
-        "fixed bottom-0 sm:bottom-auto sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:mt-4",
-        className
+        "fixed bottom-0 sm:bottom-auto sm:top-[88px] left-1/2 -translate-x-1/2 z-50",
+        "mb-6 sm:mb-0",
+        className,
       )}
     >
-      <div className="flex items-center gap-1 bg-[var(--surface-hex)] border border-[var(--border-hex)] backdrop-blur-xl py-1 px-1 rounded-full shadow-lg">
+      <div
+        className="flex items-center gap-1 py-1 px-1 rounded-full"
+        style={{
+          background: "rgba(26,17,7,0.72)",
+          border: "1px solid rgba(232,224,208,0.10)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.40), 0 1px 0 rgba(232,224,208,0.04) inset",
+        }}
+      >
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.name;
@@ -48,8 +58,8 @@ export function NavBar({ items, className }: NavBarProps) {
               className={cn(
                 "relative cursor-pointer text-xs font-semibold px-5 py-2 rounded-full transition-colors duration-200",
                 isActive
-                  ? "text-[var(--text-hex)]"
-                  : "text-[var(--muted-hex)] hover:text-[var(--text-hex)]"
+                  ? "text-[#e8e0d0]"
+                  : "text-[#8a7255] hover:text-[#c4ae8a]",
               )}
             >
               <span className="hidden md:inline tracking-wide">{item.name}</span>
@@ -60,13 +70,40 @@ export function NavBar({ items, className }: NavBarProps) {
               {isActive && (
                 <motion.div
                   layoutId="tubelight"
-                  className="absolute inset-0 w-full bg-[var(--border-hex)] rounded-full -z-10"
+                  className="absolute inset-0 w-full rounded-full -z-10"
+                  style={{ background: "rgba(83,52,21,0.55)" }}
                   initial={false}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 >
-                  <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-6 h-[2px] bg-[var(--text-hex)] rounded-full">
-                    <div className="absolute w-10 h-4 bg-[var(--text-hex)]/15 rounded-full blur-md -top-1 -left-2" />
-                    <div className="absolute w-6 h-3 bg-[var(--text-hex)]/20 rounded-full blur-sm -top-0.5" />
+                  {/* Ochre lamp bar + glow */}
+                  <div
+                    className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-t-full"
+                    style={{ background: "#d97708" }}
+                  >
+                    <div
+                      className="absolute rounded-full blur-md"
+                      style={{
+                        width: "48px", height: "20px",
+                        background: "rgba(217,119,8,0.28)",
+                        top: "-8px", left: "-8px",
+                      }}
+                    />
+                    <div
+                      className="absolute rounded-full blur-sm"
+                      style={{
+                        width: "32px", height: "14px",
+                        background: "rgba(217,119,8,0.22)",
+                        top: "-4px", left: "0",
+                      }}
+                    />
+                    <div
+                      className="absolute rounded-full blur-sm"
+                      style={{
+                        width: "16px", height: "10px",
+                        background: "rgba(240,160,48,0.30)",
+                        top: "-2px", left: "8px",
+                      }}
+                    />
                   </div>
                 </motion.div>
               )}
