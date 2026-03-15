@@ -48,10 +48,10 @@ export default function LoginPage() {
       <main className="mx-auto flex min-h-[calc(100vh-96px)] max-w-5xl items-center justify-center px-6 py-16">
         <section className="glass grid w-full max-w-4xl gap-8 rounded-[32px] p-8 md:grid-cols-[1fr_0.9fr] md:p-12">
           <div>
-            <span className="tag">Engineer login</span>
-            <h1 className="mt-6 text-5xl font-semibold leading-tight">Return to your habit dashboard.</h1>
+            <span className="tag">Operator login</span>
+            <h1 className="mt-6 text-5xl font-semibold leading-tight">Return to Revenent control.</h1>
             <p className="mt-6 max-w-lg text-base leading-8 text-[var(--text-muted)]">
-              Sign in to review your latest score, inspect promoted techniques, and manage the integrations feeding the AI Symbiote brain.
+              Sign in to review engineer signals, inspect promoted company memory, manage connected sources, and open the founder mentor console.
             </p>
           </div>
 

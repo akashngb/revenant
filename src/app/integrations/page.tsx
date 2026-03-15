@@ -9,8 +9,8 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 import type { IntegrationStatusItem, NangoSessionResponse } from "@/types/symbiote";
 
 const integrationCopy: Record<string, string> = {
-  github: "Commits, pull requests, reviews, and issue activity feed the scoring pipeline today.",
-  discord: "Connection status is stored now so Discord activity can join the evaluation pipeline next.",
+  github: "Commits, pull requests, reviews, and issue activity become source material for Revenent's memory and promotion engine.",
+  discord: "Connection status is wired now so future conversation signals can join the broader organizational memory graph.",
 };
 
 export default function IntegrationsPage() {
@@ -60,12 +60,8 @@ export default function IntegrationsPage() {
               providerConfigKey?: string;
               provider?: string;
             };
-            const resolvedProvider = String(
-              payload.providerConfigKey || payload.provider || provider,
-            );
-            const connectionId = String(
-              payload.connectionId || payload.connection_id || "",
-            );
+            const resolvedProvider = String(payload.providerConfigKey || payload.provider || provider);
+            const connectionId = String(payload.connectionId || payload.connection_id || "");
             if (connectionId) {
               await apiFetch<IntegrationStatusItem>("/api/integrations/connected", {
                 method: "POST",
@@ -96,14 +92,14 @@ export default function IntegrationsPage() {
       <main className="mx-auto max-w-7xl px-6 py-14">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="tag tag-gold">Integration control</span>
-            <h1 className="mt-5 text-5xl font-semibold leading-tight">Connect the tools that shape your engineering habits.</h1>
+            <span className="tag tag-gold">Source connections</span>
+            <h1 className="mt-5 text-5xl font-semibold leading-tight">Connect the systems Revenent watches.</h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--text-muted)]">
-              GitHub and Discord connections are managed through Nango so the FastAPI brain can pull normalized activity without custom OAuth maintenance.
+              Nango handles OAuth and token refresh so Revenent can ingest engineering activity without building fragile source-specific auth flows.
             </p>
           </div>
           <div className="rounded-[24px] border border-[var(--border-gold)] bg-[rgba(217,119,6,0.08)] px-5 py-4 text-sm leading-7 text-[var(--text)] md:max-w-sm">
-            Your data helps you improve. We track work patterns, never private messages.
+            Only connected sources are observed. The goal is preserved engineering judgment, not indiscriminate surveillance.
           </div>
         </div>
 
@@ -119,7 +115,7 @@ export default function IntegrationsPage() {
               <IntegrationCard
                 key={integration.provider}
                 integration={integration}
-                description={integrationCopy[integration.provider] || "Connect this provider through Nango."}
+                description={integrationCopy[integration.provider] || "Connect this provider so Revenent can observe and learn from it."}
                 busy={busyProvider === integration.provider}
                 onConnect={connectIntegration}
               />

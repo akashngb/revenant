@@ -30,18 +30,18 @@ export default function Navbar() {
   const navLinks = engineer
     ? [
         { href: "/dashboard", label: "Dashboard" },
-        { href: "/integrations", label: "Integrations" },
-        ...(engineer.is_admin ? [{ href: "/admin", label: "Admin" }] : []),
-        { href: "/app", label: "Anna Console" },
+        { href: "/integrations", label: "Sources" },
+        ...(engineer.is_admin ? [{ href: "/admin", label: "Review" }] : []),
+        { href: "/app", label: "Founder Console" },
       ]
     : [
-        { href: "/features", label: "Features" },
-        { href: "/tech-stack", label: "Tech Stack" },
+        { href: "/features", label: "Capabilities" },
+        { href: "/tech-stack", label: "Architecture" },
         { href: "/login", label: "Login" },
       ];
 
   const primaryHref = engineer ? "/dashboard" : "/signup";
-  const primaryLabel = engineer ? "Symbiote" : "Engineer Sign Up";
+  const primaryLabel = engineer ? "Open Dashboard" : "Request Access";
 
   const handleLogout = () => {
     clearAccessToken();
@@ -78,7 +78,7 @@ export default function Navbar() {
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}>
           <div style={{ position: "relative", width: 48, height: 48, flexShrink: 0 }}>
-            <Image src="/logo.png" alt="Revenant" fill style={{ objectFit: "contain" }} />
+            <Image src="/logo.png" alt="Revenent" fill style={{ objectFit: "contain" }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <span
@@ -90,10 +90,10 @@ export default function Navbar() {
                 textTransform: "uppercase",
               }}
             >
-              REVENANT
+              REVENENT
             </span>
             <span style={{ color: "#6b6456", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" }}>
-              AI Symbiote
+              Living company memory
             </span>
           </div>
         </Link>

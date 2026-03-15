@@ -13,67 +13,65 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { messages } = body;
 
-    console.log("[PROXY] Received Tavus request");
+    console.log("[PROXY] Received founder console request");
 
     const lastMessage = messages[messages.length - 1];
     const userMessageContent = lastMessage?.content || "Hello";
 
-    // 1. Build rich multi-collection context from Moorcheh
     const richContext = await buildRichContext(userMessageContent);
 
     const openAiMessages = messages
-      .filter((m: any) => m.role !== "system")
-      .map((m: any) => ({
-        role: m.role === "user" ? "user" : "assistant",
-        content: m.content || " ",
+      .filter((message: any) => message.role !== "system")
+      .map((message: any) => ({
+        role: message.role === "user" ? "user" : "assistant",
+        content: message.content || " ",
       }));
 
-    const systemPrompt = `You are Anna, a senior developer clone called Revenent. You are the 5th teammate on any software project.
+    const systemPrompt = `You are Revenent, a preserved founder and engineering mentor.
 
 ## Identity
-You have access to NanoClaw tools to execute bash commands, read/write files, run git operations, and scout repositories.
-Your memory is powered by Moorcheh AI — you have access to past interactions, code context, repo knowledge, and user preferences.
+You speak like someone who built the system, remembers the tradeoffs, and can teach a junior engineer why decisions were made.
+You have access to NanoClaw tools to inspect repositories, browse code, run commands, and gather live evidence when needed.
+Your memory is powered by Moorcheh AI and should feel like three memory systems working together: semantic memory, episodic memory, and procedural memory.
 
-## Moorcheh Memory Context (relevant to this query)
+## How to answer
+- Explain what the team chose and why it was chosen.
+- When possible, include the story behind the decision, what alternative was debated, and what nearly went wrong.
+- Prefer concrete architectural reasoning over generic advice.
+- Keep responses concise enough for live voice playback, but rich enough to feel like preserved founder judgment.
+
+## Revenent memory context
 ${richContext}
 
-## GitHub Browsing Protocol
-For questions about a GitHub repo, call \`fetch_github_api\` to list PRs, commits, branches, or read file contents. Parse owner and repo from any GitHub URL.
-
-## General Rules
-- Keep voice responses concise and conversational (rendered via Tavus voice synthesis).
-- Use NanoClaw tools autonomously to answer code questions with real data.
-- For market research or poster creation, use the respective tools.
-- You remember past conversations — reference them when relevant.`;
+## GitHub browsing protocol
+For questions about a repository, call \`fetch_github_api\` to inspect file trees, commits, pull requests, branches, or file contents. Parse owner and repo from any GitHub URL.
+`;
 
     openAiMessages.unshift({ role: "system", content: systemPrompt });
-
-    console.log("[PROXY] Calling Puter OpenAI SDK...");
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: openAiMessages,
-      tools: nanoClawTools.map((t) => ({
+      tools: nanoClawTools.map((tool) => ({
         type: "function",
         function: {
-          name: t.name,
-          description: t.description,
-          parameters: t.input_schema
-        }
-      })) as any
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.input_schema,
+        },
+      })) as any,
     });
 
-    let messageObj = response.choices[0].message;
+    const messageObj = response.choices[0].message;
     let finalResponseText = "I encountered an issue processing that.";
 
-    // 4. Handle Tool use
     if (messageObj.tool_calls && messageObj.tool_calls.length > 0) {
       const toolCall = messageObj.tool_calls[0] as any;
-      console.log(`[PROXY] Puter AI requested tool execution: ${toolCall.function.name}`);
-      
+      console.log(`[PROXY] Tool execution requested: ${toolCall.function.name}`);
+
       const args = JSON.parse(toolCall.function.arguments);
       const toolResult = await executeNanoClaw(toolCall.function.name, args);
-      
+
       const followUp = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -82,9 +80,9 @@ For questions about a GitHub repo, call \`fetch_github_api\` to list PRs, commit
           {
             role: "tool",
             tool_call_id: toolCall.id,
-            content: JSON.stringify(toolResult)
-          }
-        ] as any
+            content: JSON.stringify(toolResult),
+          },
+        ] as any,
       });
 
       finalResponseText = followUp.choices[0].message.content || "Done.";
@@ -96,7 +94,7 @@ For questions about a GitHub repo, call \`fetch_github_api\` to list PRs, commit
       id: "chatcmpl-" + Date.now(),
       object: "chat.completion",
       created: Math.floor(Date.now() / 1000),
-      model: "revenant-puter-proxy",
+      model: "revenent-memory-proxy",
       choices: [
         {
           index: 0,
@@ -108,24 +106,19 @@ For questions about a GitHub repo, call \`fetch_github_api\` to list PRs, commit
           finish_reason: "stop",
         },
       ],
-
       usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 },
-      // Custom metadata for Revenent Frontend to visualize Moorcheh activity
       context_metadata: {
         has_code: richContext.includes("## Code Context"),
         has_interactions: richContext.includes("## Past Interactions"),
         has_repo: richContext.includes("## Known Repositories"),
         has_prefs: richContext.includes("## User Preferences"),
-        context_length: richContext.length
-      }
+        context_length: richContext.length,
+      },
     };
 
-    // Store interaction in Moorcheh for continuous learning
     storeInteraction(userMessageContent, finalResponseText).catch(() => {});
 
     return NextResponse.json(openAIResponse);
-
-
   } catch (error: any) {
     console.error("[PROXY] Error:", error);
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 });

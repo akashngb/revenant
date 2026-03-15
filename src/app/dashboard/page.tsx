@@ -55,10 +55,10 @@ export default function DashboardPage() {
       <main className="mx-auto max-w-7xl px-6 py-14">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="tag tag-gold">Engineer dashboard</span>
-            <h1 className="mt-5 text-5xl font-semibold leading-tight">Habit intelligence for the last 30 days.</h1>
+            <span className="tag tag-gold">Operator dashboard</span>
+            <h1 className="mt-5 text-5xl font-semibold leading-tight">Team memory at a glance.</h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--text-muted)]">
-              Watch your score evolve, review each labeled action, and track the best moments that graduate into company-wide knowledge.
+              This is the working view of what Revenent is learning: team signals, promoted memory, and the patterns worth keeping.
             </p>
           </div>
         </div>
@@ -76,9 +76,9 @@ export default function DashboardPage() {
 
             <section className="grid gap-4 md:grid-cols-3">
               {[
-                ["Good habits", summary.good_count, "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"],
-                ["Neutral habits", summary.neutral_count, "border-slate-500/40 bg-slate-500/10 text-slate-200"],
-                ["Bad habits", summary.bad_count, "border-red-500/40 bg-red-500/10 text-red-300"],
+                ["Strong patterns", summary.good_count, "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"],
+                ["Neutral signals", summary.neutral_count, "border-slate-500/40 bg-slate-500/10 text-slate-200"],
+                ["Risk patterns", summary.bad_count, "border-red-500/40 bg-red-500/10 text-red-300"],
               ].map(([label, value, tone]) => (
                 <div key={String(label)} className="glass rounded-[24px] p-6">
                   <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">{label}</p>
@@ -90,7 +90,7 @@ export default function DashboardPage() {
             <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
               <HabitChart data={chartData} />
               <section className="glass rounded-[28px] p-6">
-                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Connected tools</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Observed sources</p>
                 <h3 className="mt-2 text-2xl font-semibold text-[var(--text)]">Sync status</h3>
                 <div className="mt-6 flex flex-col gap-4">
                   {integrations.map((integration) => (
@@ -114,11 +114,11 @@ export default function DashboardPage() {
               <ActivityFeed items={activity} />
               <section className="glass rounded-[28px] p-6">
                 <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Promotion engine</p>
-                <h3 className="mt-2 text-2xl font-semibold text-[var(--text)]">Promoted to Company</h3>
+                <h3 className="mt-2 text-2xl font-semibold text-[var(--text)]">Promoted to company memory</h3>
                 <div className="mt-6 flex flex-col gap-4">
                   {promoted.length === 0 ? (
                     <div className="rounded-[20px] border border-dashed border-[var(--border)] p-5 text-sm leading-6 text-[var(--text-muted)]">
-                      No habits have been promoted yet. When a standout moment is detected in a labeled batch, it will appear here.
+                      No patterns have been promoted yet. When Revenent detects a best moment in a labeled batch, it will appear here for review.
                     </div>
                   ) : (
                     promoted.map((item) => (

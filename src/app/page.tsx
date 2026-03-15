@@ -1,105 +1,128 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
+
 import Navbar from "@/components/Navbar";
-import { Shield, Cpu, Sparkles, ArrowRight } from "lucide-react";
+
+const integrations = [
+  {
+    id: "slack",
+    label: "Slack",
+    src: "/slack.png",
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    src: "/github.png",
+  },
+  {
+    id: "jira",
+    label: "Jira",
+    src: "/jira.png",
+  },
+  {
+    id: "gmail",
+    label: "Gmail",
+    src: "/gmail.webp",
+  },
+] as const;
 
 export default function LandingPage() {
   return (
-    <div style={{ background: "#0c0905", minHeight: "100vh", color: "#e8e0d0", overflowX: "hidden" }}>
+    <div className="landing-page-root">
       <Navbar />
 
-      {/* ─── Hero ────────────────────────────────── */}
-      <section style={{ paddingTop: 160, paddingBottom: 120, paddingLeft: 32, paddingRight: 32, position: "relative", textAlign: "center" }}>
-        {/* Glow */}
-        <div style={{ position: "absolute", top: "30%", left: "50%", transform: "translate(-50%,-50%)", width: 700, height: 700, background: "radial-gradient(circle, rgba(217,119,6,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <main className="page-shell landing-hero-page">
+        <section className="landing-hero">
+          <div className="hero-network">
+            <div className="hero-network__canvas">
+              <svg
+                className="hero-network__lines"
+                viewBox="0 0 1200 760"
+                aria-hidden="true"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.68)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.12)" />
+                  </linearGradient>
+                </defs>
 
-        <div style={{ maxWidth: 900, margin: "0 auto", position: "relative" }}>
-          {/* Badge */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", marginBottom: 48 }}>
-            <Sparkles style={{ width: 12, height: 12, color: "#d97706" }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#6b6456" }}>Autonomous Intelligence Protocol</span>
+                <path className="node-line" d="M196 178 C286 190, 384 228, 496 302" />
+                <path className="node-line node-line--flow" d="M204 184 C302 200, 392 238, 502 308" />
+                <path className="node-line" d="M1004 178 C908 190, 812 228, 700 302" />
+                <path className="node-line node-line--flow" d="M996 184 C894 200, 806 238, 694 308" />
+                <path className="node-line" d="M238 604 C336 578, 426 512, 508 420" />
+                <path className="node-line node-line--flow" d="M246 598 C350 570, 434 506, 514 414" />
+                <path className="node-line" d="M962 604 C864 578, 774 512, 692 420" />
+                <path className="node-line node-line--flow" d="M954 598 C850 570, 766 506, 686 414" />
+              </svg>
+
+              <div className="hero-network__status">
+                <span className="hero-network__status-dot" />
+                <span className="hero-network__status-label">LIVE</span>
+                <span className="hero-network__status-copy">Synced founder context across Slack, GitHub, Jira, and Gmail</span>
+              </div>
+
+              <div className="hero-core">
+                <div className="hero-core__frame">
+                  <div className="hero-core__glow" />
+
+                  <div className="hero-core__media">
+                    <Image
+                      src="/tavushero.png"
+                      alt="Tavus AI persona on a video call"
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 80vw, 42vw"
+                      className="hero-core__image"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {integrations.map(({ id, label, src }) => (
+                <div key={id} className={`hero-node hero-node--${id}`}>
+                  <div className="hero-node__icon">
+                    <Image src={src} alt={label} fill sizes="80px" className="hero-node__image" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Headline */}
-          <h1 style={{ fontFamily: "var(--font-playfair, Georgia)", fontStyle: "italic", fontSize: "clamp(52px, 8vw, 108px)", lineHeight: 1, letterSpacing: "-0.02em", marginBottom: 32 }}>
-            The <span style={{ color: "#d97706" }}>Revenant</span>
-            <br />Perspective.
-          </h1>
+          <div className="landing-hero__intro">
+            <div className="landing-hero__eyebrow">
+              <Sparkles size={14} strokeWidth={1.8} />
+              <span>Passive intelligence for engineering teams</span>
+            </div>
 
-          {/* Subhead */}
-          <p style={{ fontSize: 17, lineHeight: 1.7, color: "#6b6456", maxWidth: 520, margin: "0 auto 48px" }}>
-            A sentient developer clone designed to observe, reason, and act within your architecture — with absolute autonomy.
-          </p>
+            <h1 className="landing-hero__title">
+              <span className="landing-hero__title-accent">Revenent</span>
+              <br />
+              keeps your best engineering judgment alive.
+            </h1>
 
-          {/* CTA */}
-          <Link href="/app" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", borderRadius: 999, background: "#d97706", color: "#0c0905", fontWeight: 800, fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", textDecoration: "none", boxShadow: "0 16px 48px rgba(217,119,6,0.3)", whiteSpace: "nowrap" }}>
-            Initiate Transmission <ArrowRight style={{ width: 16, height: 16 }} />
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── Mission ─────────────────────────────── */}
-      <section style={{ padding: "100px 32px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
-          {/* Text col */}
-          <div>
-            <h2 style={{ fontFamily: "var(--font-playfair, Georgia)", fontStyle: "italic", fontSize: 48, lineHeight: 1.15, marginBottom: 24 }}>
-              Elegance in <span style={{ color: "#d97706" }}>Execution</span>.
-            </h2>
-            <p style={{ fontSize: 16, lineHeight: 1.8, color: "#6b6456", marginBottom: 40 }}>
-              Revenant bridges neural reasoning and binary execution. She doesn&apos;t just suggest code — she executes it, verifies it, and remembers the context for the next evolution.
+            <p className="landing-hero__copy">
+              Revenent is a passive intelligence layer that watches every engineer on your team, learns what makes them
+              effective, distills that wisdom into living company memory, and preserves legendary founder or senior-engineer
+              knowledge as an AI mentor juniors can talk to.
             </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 20px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}>
-                <Shield style={{ width: 16, height: 16, color: "#d97706", flexShrink: 0 }} />
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b6456" }}>Encrypted Logic</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 20px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}>
-                <Cpu style={{ width: 16, height: 16, color: "#d97706", flexShrink: 0 }} />
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b6456" }}>Neural Sync</span>
-              </div>
+
+            <div className="landing-hero__actions">
+              <Link href="/app" className="landing-hero__primary">
+                Open Founder Console
+                <ArrowRight size={16} strokeWidth={2} />
+              </Link>
+
+              <Link href="/features" className="landing-hero__secondary">
+                See the story
+              </Link>
             </div>
           </div>
-
-          {/* Logo col */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ width: 360, height: 360, borderRadius: 48, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.015)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 60, background: "radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 70%)", borderRadius: "50%" }} />
-              <Image src="/logo.png" alt="Revenant Core" width={240} height={240} style={{ objectFit: "contain", position: "relative" }} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── CTA strip ───────────────────────────── */}
-      <section style={{ padding: "80px 32px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 24, textAlign: "center" }}>
-          <h2 style={{ fontFamily: "var(--font-playfair, Georgia)", fontStyle: "italic", fontSize: 40, lineHeight: 1.2 }}>Ready to meet <span style={{ color: "#d97706" }}>Anna</span>?</h2>
-          <p style={{ fontSize: 15, color: "#6b6456", maxWidth: 420 }}>Your autonomous AI developer clone is waiting. No setup required.</p>
-          <Link href="/app" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", borderRadius: 999, background: "#d97706", color: "#0c0905", fontWeight: 800, fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", textDecoration: "none", boxShadow: "0 12px 40px rgba(217,119,6,0.3)", whiteSpace: "nowrap" }}>
-            Open the App <ArrowRight style={{ width: 16, height: 16 }} />
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── Footer ──────────────────────────────── */}
-      <footer style={{ padding: "32px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, opacity: 0.6 }}>
-            <Image src="/logo.png" alt="" width={40} height={40} style={{ objectFit: "contain" }} />
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>Revenant</span>
-          </div>
-          <div style={{ display: "flex", gap: 32, opacity: 0.3 }}>
-            {[["Features", "/features"], ["Tech Stack", "/tech-stack"], ["App", "/app"]].map(([label, href]) => (
-              <Link key={href} href={href} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "inherit", textDecoration: "none" }}>{label}</Link>
-            ))}
-          </div>
-          <span style={{ fontSize: 10, color: "#3a342a", letterSpacing: "0.2em", textTransform: "uppercase" }}>© 2026 Revenant</span>
-        </div>
-      </footer>
+        </section>
+      </main>
     </div>
   );
 }

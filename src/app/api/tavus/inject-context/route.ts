@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 /**
  * POST /api/tavus/inject-context
- * Updates the active Tavus conversation context so Anna knows about
- * a GitHub repo that was scouted in the chat.
+ * Updates the active Tavus founder session with freshly scouted repository context.
  */
 export async function POST(req: NextRequest) {
   try {

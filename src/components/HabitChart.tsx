@@ -21,7 +21,7 @@ export default function HabitChart({ data }: HabitChartProps) {
     <section className="glass rounded-[28px] p-6">
       <div className="mb-6">
         <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--text-muted)]">Trend</p>
-        <h3 className="mt-2 text-2xl font-semibold text-[var(--text)]">30-day habit trajectory</h3>
+        <h3 className="mt-2 text-2xl font-semibold text-[var(--text)]">30-day behavior signal</h3>
       </div>
 
       <div className="h-[320px] w-full">

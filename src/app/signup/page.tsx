@@ -62,16 +62,16 @@ export default function SignupPage() {
       <main className="mx-auto flex min-h-[calc(100vh-96px)] max-w-6xl items-center px-6 py-16">
         <div className="grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="glass rounded-[32px] p-8 md:p-12">
-            <span className="tag tag-gold">Engineer onboarding</span>
-            <h1 className="mt-6 text-5xl font-semibold leading-tight">Create your AI Symbiote profile.</h1>
+            <span className="tag tag-gold">Operator onboarding</span>
+            <h1 className="mt-6 text-5xl font-semibold leading-tight">Create your Revenent profile.</h1>
             <p className="mt-6 max-w-xl text-base leading-8 text-[var(--text-muted)]">
-              Connect your engineering activity, build a living memory of your habits, and start with a dashboard that shows what is helping you ship better.
+              Connect the sources Revenent observes, keep personal memory isolated by engineer, and feed the promotion engine that turns strong habits into shared company knowledge.
             </p>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
               {[
-                ["GitHub telemetry", "Batch scoring from commits, reviews, and issue activity."],
-                ["Nango connect", "User OAuth lives in the integrations flow, not in fragile custom code."],
-                ["Moorcheh memory", "Personal history and promoted best moments stay queryable over time."],
+                ["Observed sources", "GitHub today, with Slack, Jira, and future IDE telemetry feeding the intelligence layer."],
+                ["Memory isolation", "Each engineer keeps personal memory separate from company memory and founder memory."],
+                ["Founder mentor", "The founder console is where preserved judgment becomes an interactive teaching surface."],
               ].map(([title, copy]) => (
                 <div key={title} className="rounded-[22px] border border-[var(--border)] bg-[rgba(255,255,255,0.02)] p-5">
                   <p className="text-sm font-semibold text-[var(--text)]">{title}</p>

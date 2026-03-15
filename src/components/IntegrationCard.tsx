@@ -67,7 +67,7 @@ export default function IntegrationCard({ integration, description, busy = false
         disabled={busy}
         className="btn-primary justify-center disabled:cursor-wait disabled:opacity-60"
       >
-        {busy ? "Opening Nango..." : integration.connected ? "Reconnect" : "Connect"}
+        {busy ? "Opening Nango..." : integration.connected ? "Reconnect source" : "Connect source"}
       </button>
     </div>
   );
