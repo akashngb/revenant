@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "generate": "node tools/tavus/tavus.js",
@@ -24,6 +24,7 @@
     "openai": "^6.29.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^2.15.4",
     "three": "^0.183.2"
   },
   "devDependencies": {
