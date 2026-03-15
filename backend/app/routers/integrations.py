@@ -140,7 +140,7 @@ async def integration_callback(
     try:
         engineer_id = int(state)
     except ValueError:
-        return RedirectResponse(url=_frontend_integrations_url(error="invalid_state"))
+        return RedirectResponse(url=_frontend_redirect_url(redirect, error="invalid_state"))
 
     connection_id = id
     connection: dict[str, object] = {}

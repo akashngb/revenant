@@ -9,7 +9,8 @@
       "Bash(npx tsc:*)",
       "Read(//c/Users/omarm/Downloads/**)",
       "Bash(unzip -l \"C:\\\\Users\\\\omarm\\\\Downloads\\\\852vxYhHuCL-1773556468345.zip\")",
-      "Bash(wsl:*)"
+      "Bash(wsl:*)",
+      "Bash(pg_isready -h localhost -p 5432 2>/dev/null; echo \"exit: $?\")"
     ]
   },
   "enabledPlugins": {
