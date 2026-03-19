@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { apiFetch, clearAccessToken, getAccessToken } from "@/lib/api";
+import { apiFetch, clearSession, storeEngineerSnapshot } from "@/lib/api";
 import type { EngineerSummary } from "@/types/symbiote";
 
 export default function Navbar() {
@@ -14,15 +14,13 @@ export default function Navbar() {
   const [engineer, setEngineer] = useState<EngineerSummary | null>(null);
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token) {
-      return;
-    }
-
     apiFetch<EngineerSummary>("/api/auth/me")
-      .then((me) => setEngineer(me))
-      .catch(() => {
-        clearAccessToken();
+      .then((me) => {
+        storeEngineerSnapshot({ engineer: me });
+        setEngineer(me);
+      })
+      .catch(async () => {
+        await clearSession();
         setEngineer(null);
       });
   }, [pathname]);
@@ -44,8 +42,8 @@ export default function Navbar() {
   const primaryHref = engineer ? "/dashboard" : "/signup";
   const primaryLabel = engineer ? "Symbiote" : "Engineer Sign Up";
 
-  const handleLogout = () => {
-    clearAccessToken();
+  const handleLogout = async () => {
+    await clearSession();
     setEngineer(null);
     router.push("/login");
   };

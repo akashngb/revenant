@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { buildFounderContext } from "@/lib/moorchehMemory";
+import { requireEngineer } from "@/lib/serverAuth";
 
 export async function POST(req: Request) {
+  const engineer = await requireEngineer(req);
+  if (engineer instanceof NextResponse) {
+    return engineer;
+  }
+
   try {
     const apiKey = process.env.TAVUS_API_KEY;
     if (!apiKey) {
@@ -124,8 +130,9 @@ When the junior asks a question, search your memory for the most relevant story,
         namespaces: [...new Set(founderCtx.sources.map((s) => s.namespace))],
       },
     });
-  } catch (error: any) {
-    console.error("[TAVUS] Unexpected error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[TAVUS] Unexpected error:", message);
+    return NextResponse.json({ error: "Unable to start Tavus session" }, { status: 500 });
   }
 }

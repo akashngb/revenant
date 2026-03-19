@@ -229,7 +229,7 @@ async def setup_ticketing_webhooks(connection_id: str, hook_url: str) -> list[di
 def verify_webhook_signature(payload_body: bytes, signature: str) -> bool:
     """Validate the Unified webhook signature when a secret is configured."""
     if not settings.unified_webhook_secret:
-        return True
+        return False
     provided = signature.removeprefix("sha256=").strip()
     expected = hmac.new(
         settings.unified_webhook_secret.encode(),

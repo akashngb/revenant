@@ -42,5 +42,12 @@ class Settings(BaseSettings):
     fastapi_port: int = 8000
     fastapi_base_url: str = "http://127.0.0.1:8000"
 
+    def model_post_init(self, __context) -> None:
+        if not self.jwt_secret_key or self.jwt_secret_key == "change-me":
+            raise ValueError("JWT_SECRET_KEY must be configured with a strong secret")
+
+        if not self.unified_webhook_secret:
+            raise ValueError("UNIFIED_WEBHOOK_SECRET must be configured")
+
 
 settings = Settings()

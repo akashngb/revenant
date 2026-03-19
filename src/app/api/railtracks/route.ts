@@ -1,16 +1,31 @@
 import { anthropic } from '@ai-sdk/anthropic';
-import { streamText } from 'ai';
+import { ModelMessage, streamText } from 'ai';
 import { buildFounderContext, storeInteraction } from '@/lib/moorchehMemory';
+import { requireEngineer } from "@/lib/serverAuth";
+
+type RailtracksMessage = {
+  role: "system" | "user" | "assistant";
+  content?: string;
+};
 
 // Tavus sends OpenAI-compatible requests here as its custom LLM endpoint.
 // We intercept, enrich with Moorcheh founder memory, and stream back via Claude.
 export async function POST(req: Request) {
+  const engineer = await requireEngineer(req);
+  if (engineer instanceof Response) {
+    return engineer;
+  }
+
   try {
-    const body = await req.json();
-    const { messages } = body;
+    const body = (await req.json()) as { messages?: RailtracksMessage[] };
+    const messages = Array.isArray(body.messages) ? body.messages : [];
+    const modelMessages: ModelMessage[] = messages.map((message) => ({
+      role: message.role,
+      content: message.content || " ",
+    }));
 
     // Extract the latest user message for memory retrieval
-    const lastUserMsg = [...messages].reverse().find((m: any) => m.role === 'user');
+    const lastUserMsg = [...messages].reverse().find((message) => message.role === 'user');
     const userQuery = lastUserMsg?.content || '';
 
     // Query all three founder namespaces in parallel, rerank by decayed strength
@@ -42,7 +57,7 @@ ${founderCtx.sources.length > 0
     // Stream response via Claude
     const result = streamText({
       model: anthropic('claude-sonnet-4-20250514'),
-      messages,
+      messages: modelMessages,
       system: founderSystemPrompt,
     });
 

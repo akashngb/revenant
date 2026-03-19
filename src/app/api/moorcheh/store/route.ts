@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { store, ingestRepoPulse } from "@/lib/moorchehMemory";
 
-/**
- * POST /api/moorcheh/store
- * Client-side memory storage: interactions, repo pulses, sessions.
- */
+import { store, ingestRepoPulse } from "@/lib/moorchehMemory";
+import { requireEngineer } from "@/lib/serverAuth";
+
 export async function POST(req: NextRequest) {
+  const engineer = await requireEngineer(req);
+  if (engineer instanceof NextResponse) {
+    return engineer;
+  }
+
   try {
     const body = await req.json();
     const { content, type, repoUrl } = body;
@@ -17,7 +20,6 @@ export async function POST(req: NextRequest) {
     let memoryId: string | null = null;
 
     if (type === "repo_pulse" && repoUrl) {
-      // Parse the content sections back for structured ingestion
       await ingestRepoPulse(repoUrl, { fileTree: content });
       memoryId = "repo_pulse_stored";
     } else {
@@ -25,9 +27,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, memory_id: memoryId });
-  } catch (err: any) {
-    console.error("[MOORCHEH STORE]", err.message);
-    // Don't fail the client — Moorcheh errors are non-blocking
-    return NextResponse.json({ success: false, error: err.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[MOORCHEH STORE]", message);
+    return NextResponse.json({ success: false, error: "Unable to store memory" }, { status: 500 });
   }
 }

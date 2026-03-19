@@ -57,8 +57,8 @@ export default function IntegrationCard({ integration, description, busy = false
           <p className="mt-2 text-sm text-[var(--text)]">{formatDate(integration.last_synced)}</p>
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.24em]">Connection ID</p>
-          <p className="mt-2 truncate text-sm text-[var(--text)]">{integration.unified_connection_id || "Pending"}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em]">Connected at</p>
+          <p className="mt-2 text-sm text-[var(--text)]">{formatDate(integration.connected_at)}</p>
         </div>
       </div>
 

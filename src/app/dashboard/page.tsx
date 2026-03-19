@@ -12,7 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { getAccessToken, clearAccessToken, AUTH_ENGINEER_KEY } from "@/lib/api";
+import { apiFetch, clearSession } from "@/lib/api";
 import type { EngineerSummary } from "@/types/symbiote";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -31,31 +31,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-    const stored =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem(AUTH_ENGINEER_KEY)
-        : null;
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
+    apiFetch<EngineerSummary>("/api/auth/me")
+      .then((engineer) => {
+        setUser(engineer);
         setLoading(false);
-      } catch {
-        clearAccessToken();
+      })
+      .catch(async () => {
+        await clearSession();
         router.replace("/login");
-      }
-    } else {
-      clearAccessToken();
-      router.replace("/login");
-    }
+      });
   }, [router]);
 
-  const handleLogout = () => {
-    clearAccessToken();
+  const handleLogout = async () => {
+    await clearSession();
     router.push("/login");
   };
 

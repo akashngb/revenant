@@ -37,8 +37,8 @@ app = FastAPI(
     title=settings.app_name,
     description="Full-stack backend for AI Symbiote habit tracking and memory orchestration.",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if settings.fastapi_debug else None,
+    redoc_url="/redoc" if settings.fastapi_debug else None,
     lifespan=lifespan,
 )
 

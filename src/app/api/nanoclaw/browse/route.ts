@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { executeNanoClaw } from "@/lib/nanoClaw";
+import { requireAdmin } from "@/lib/serverAuth";
+
+const ALLOWED_TOOLS = new Set(["read_file", "fetch_github_api"]);
 
 /**
  * POST /api/nanoclaw/browse
@@ -7,11 +10,19 @@ import { executeNanoClaw } from "@/lib/nanoClaw";
  * or (2) use Browser Use API for autonomous GitHub browsing.
  */
 export async function POST(req: NextRequest) {
+  const admin = await requireAdmin(req);
+  if (admin instanceof NextResponse) {
+    return admin;
+  }
+
   try {
     const body = await req.json();
 
     // If a tool + input is provided, execute it via NanoClaw (used by code viewer)
     if (body.tool && body.input) {
+      if (!ALLOWED_TOOLS.has(body.tool)) {
+        return NextResponse.json({ error: "Tool not allowed" }, { status: 403 });
+      }
       const result = await executeNanoClaw(body.tool, body.input);
       return NextResponse.json(result);
     }
@@ -49,7 +60,7 @@ export async function POST(req: NextRequest) {
     if (!res.ok) {
       const err = await res.text();
       console.error("[NANOCLAW BROWSE] Browser Use API error:", err);
-      return NextResponse.json({ error: `Browser Use API: ${err}` }, { status: res.status });
+      return NextResponse.json({ error: "Browser task failed" }, { status: res.status });
     }
 
     const data = await res.json();
@@ -58,8 +69,9 @@ export async function POST(req: NextRequest) {
       success: true,
       result: data.result || data.output || data,
     });
-  } catch (err: any) {
-    console.error("[NANOCLAW BROWSE] Error:", err.message);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[NANOCLAW BROWSE] Error:", message);
+    return NextResponse.json({ error: "Unable to complete browser task" }, { status: 500 });
   }
 }

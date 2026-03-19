@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const fastApiBaseUrl = process.env.FASTAPI_BASE_URL || "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingRoot: path.resolve(__dirname),
   async rewrites() {
     return [
       {

@@ -4,10 +4,12 @@ from __future__ import annotations
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from app.config import settings
+from app.dependencies import get_current_engineer
+from app.models import Engineer
 
 router = APIRouter()
 
@@ -36,7 +38,10 @@ def moorcheh_headers() -> dict[str, str]:
 
 
 @router.post("/store")
-async def store_memory(req: StoreRequest):
+async def store_memory(
+    req: StoreRequest,
+    _: Engineer = Depends(get_current_engineer),
+):
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.post(
             f"{settings.moorche_base_url.rstrip('/')}/memories",
@@ -57,7 +62,10 @@ async def store_memory(req: StoreRequest):
 
 
 @router.post("/query")
-async def query_memory(req: QueryRequest):
+async def query_memory(
+    req: QueryRequest,
+    _: Engineer = Depends(get_current_engineer),
+):
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.post(
             f"{settings.moorche_base_url.rstrip('/')}/memories/search",
@@ -75,7 +83,10 @@ async def query_memory(req: QueryRequest):
 
 
 @router.get("/list")
-async def list_memories(limit: int = 20):
+async def list_memories(
+    limit: int = 20,
+    _: Engineer = Depends(get_current_engineer),
+):
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.get(
             f"{settings.moorche_base_url.rstrip('/')}/memories",
@@ -88,7 +99,10 @@ async def list_memories(limit: int = 20):
 
 
 @router.delete("/{memory_id}")
-async def delete_memory(memory_id: str):
+async def delete_memory(
+    memory_id: str,
+    _: Engineer = Depends(get_current_engineer),
+):
     async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.delete(
             f"{settings.moorche_base_url.rstrip('/')}/memories/{memory_id}",

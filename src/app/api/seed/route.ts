@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { store, FOUNDER_NAMESPACES } from '@/lib/moorchehMemory';
+import { requireAdmin } from "@/lib/serverAuth";
 
 // Demo seed data for the three founder memory namespaces.
 // POST /api/seed — loads rich founder memories for demo.
@@ -93,7 +94,12 @@ const PROCEDURAL_MEMORIES = [
   },
 ];
 
-export async function POST() {
+export async function POST(request: Request) {
+  const admin = await requireAdmin(request);
+  if (admin instanceof NextResponse) {
+    return admin;
+  }
+
   const results = { semantic: 0, episodic: 0, procedural: 0, errors: [] as string[] };
 
   // Seed semantic memories

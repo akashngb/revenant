@@ -27,7 +27,6 @@ export interface IntegrationStatusItem {
   connected: boolean;
   connected_at: string | null;
   last_synced: string | null;
-  unified_connection_id: string | null;
 }
 
 export interface DashboardSummaryResponse {

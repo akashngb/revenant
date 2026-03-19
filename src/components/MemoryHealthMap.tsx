@@ -23,6 +23,11 @@ interface SimNode extends d3.SimulationNodeDatum {
   radius: number;
 }
 
+interface SimLink extends d3.SimulationLinkDatum<SimNode> {
+  source: string | SimNode;
+  target: string | SimNode;
+}
+
 const NAMESPACE_COLORS: Record<string, string> = {
   semantic: "#c084fc",
   episodic: "#86efac",
@@ -69,9 +74,11 @@ export default function MemoryHealthMap() {
       reinforcements: n.reinforcement_count,
       radius: Math.max(8, Math.min(30, n.decayed_strength * 28)),
     }));
+    const resolveNode = (value: string | SimNode): SimNode | null =>
+      typeof value === "string" ? simNodes.find((node) => node.id === value) ?? null : value;
 
     // Group links: connect nodes within the same namespace
-    const links: { source: string; target: string }[] = [];
+    const links: SimLink[] = [];
     const byNamespace: Record<string, SimNode[]> = {};
     for (const n of simNodes) {
       if (!byNamespace[n.namespace]) byNamespace[n.namespace] = [];
@@ -88,14 +95,14 @@ export default function MemoryHealthMap() {
       .force(
         "link",
         d3
-          .forceLink(links)
-          .id((d: any) => d.id)
+          .forceLink<SimNode, SimLink>(links)
+          .id((d) => d.id)
           .distance(60)
           .strength(0.3)
       )
       .force("charge", d3.forceManyBody().strength(-80))
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius((d: any) => d.radius + 4));
+      .force("collision", d3.forceCollide<SimNode>().radius((d) => d.radius + 4));
 
     const defs = svg.append("defs");
 
@@ -116,7 +123,7 @@ export default function MemoryHealthMap() {
 
     const node = svg
       .append("g")
-      .selectAll("circle")
+      .selectAll<SVGCircleElement, SimNode>("circle")
       .data(simNodes)
       .join("circle")
       .attr("r", (d) => d.radius)
@@ -141,7 +148,7 @@ export default function MemoryHealthMap() {
           tooltipRef.current.style.display = "block";
           tooltipRef.current.style.left = `${event.offsetX + 12}px`;
           tooltipRef.current.style.top = `${event.offsetY - 12}px`;
-          tooltipRef.current.innerHTML = `<strong>${d.namespace}</strong><br/>${d.content.slice(0, 80)}...<br/>Strength: ${(d.strength * 100).toFixed(0)}%`;
+          tooltipRef.current.textContent = `${d.namespace} | ${d.content.slice(0, 80)}... | Strength: ${(d.strength * 100).toFixed(0)}%`;
         }
       })
       .on("mouseout", function (_event, d) {
@@ -151,7 +158,7 @@ export default function MemoryHealthMap() {
         }
       })
       .call(
-        d3.drag<any, SimNode>()
+        d3.drag<SVGCircleElement, SimNode>()
           .on("start", (event, d) => {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
@@ -184,10 +191,10 @@ export default function MemoryHealthMap() {
 
     simulation.on("tick", () => {
       link
-        .attr("x1", (d: any) => d.source.x)
-        .attr("y1", (d: any) => d.source.y)
-        .attr("x2", (d: any) => d.target.x)
-        .attr("y2", (d: any) => d.target.y);
+        .attr("x1", (d) => resolveNode(d.source)?.x ?? 0)
+        .attr("y1", (d) => resolveNode(d.source)?.y ?? 0)
+        .attr("x2", (d) => resolveNode(d.target)?.x ?? 0)
+        .attr("y2", (d) => resolveNode(d.target)?.y ?? 0);
 
       node.attr("cx", (d) => d.x!).attr("cy", (d) => d.y!);
 

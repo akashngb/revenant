@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireEngineer } from "@/lib/serverAuth";
 
 /**
  * POST /api/tavus/inject-context
  * Updates the active Tavus founder session with freshly scouted repository context.
  */
 export async function POST(req: NextRequest) {
+  const engineer = await requireEngineer(req);
+  if (engineer instanceof NextResponse) {
+    return engineer;
+  }
+
   try {
     const { conversation_id, context } = await req.json();
     const apiKey = process.env.TAVUS_API_KEY;
@@ -33,8 +39,9 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     console.log("[TAVUS INJECT] Context updated for:", conversation_id);
     return NextResponse.json({ success: true, data });
-  } catch (err: any) {
-    console.error("[TAVUS INJECT] Error:", err.message);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[TAVUS INJECT] Error:", message);
+    return NextResponse.json({ error: "Unable to update Tavus context" }, { status: 500 });
   }
 }

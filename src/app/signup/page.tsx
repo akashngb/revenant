@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrainCircuit } from "lucide-react";
 
-import { apiFetch, setAccessToken, storeEngineerSnapshot } from "@/lib/api";
+import { apiFetch, persistSession, storeEngineerSnapshot } from "@/lib/api";
 import type { EngineerSummary, LoginResponse } from "@/types/symbiote";
 
 export default function SignupPage() {
@@ -46,7 +46,7 @@ export default function SignupPage() {
         json: { email, password },
       });
 
-      setAccessToken(login.access_token);
+      await persistSession(login);
       storeEngineerSnapshot(login);
       router.push(nextPath);
     } catch (caughtError) {

@@ -1,6 +1,7 @@
 """Moorcheh-backed habit evaluation and per-user memory storage."""
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 from typing import Any, Literal
@@ -9,6 +10,12 @@ import httpx
 from pydantic import BaseModel, Field
 
 from app.config import settings
+
+FOUNDER_NAMESPACES = {
+    "semantic": "founder-semantic",
+    "episodic": "founder-episodic",
+    "procedural": "founder-procedural",
+}
 
 
 class EvaluationEntry(BaseModel):
@@ -124,21 +131,59 @@ async def store_habit_memories(user_id: str, actions: list[dict[str, Any]], eval
         )
 
 
-async def evaluate_batch(user_id: str, actions: list[dict[str, Any]]) -> BatchEvaluationResult:
-    company_context = await fetch_namespace_context(
-        "company_global_wisdom",
-        "What are our coding best practices?",
+async def _fetch_founder_context(actions: list[dict[str, Any]]) -> str:
+    """Pull relevant founder reasoning from all three cognitive namespaces."""
+    action_summary = ", ".join(
+        a.get("summary") or a.get("action_type", "activity") for a in actions[:5]
     )
-    user_context = await fetch_namespace_context(
-        f"user_{user_id}_memory",
-        "What are this engineer's strengths and weaknesses?",
+    sem, epi, proc = await asyncio.gather(
+        fetch_namespace_context(
+            FOUNDER_NAMESPACES["semantic"],
+            f"Architecture decisions relevant to: {action_summary}",
+            top_k=2,
+        ),
+        fetch_namespace_context(
+            FOUNDER_NAMESPACES["episodic"],
+            f"Stories or lessons about: {action_summary}",
+            top_k=2,
+        ),
+        fetch_namespace_context(
+            FOUNDER_NAMESPACES["procedural"],
+            f"Decision frameworks for evaluating: {action_summary}",
+            top_k=2,
+        ),
+        return_exceptions=True,
+    )
+    parts: list[str] = []
+    if isinstance(sem, str) and sem:
+        parts.append(f"[Decisions] {sem}")
+    if isinstance(epi, str) and epi:
+        parts.append(f"[Stories] {epi}")
+    if isinstance(proc, str) and proc:
+        parts.append(f"[Frameworks] {proc}")
+    return "\n".join(parts)
+
+
+async def evaluate_batch(user_id: str, actions: list[dict[str, Any]]) -> BatchEvaluationResult:
+    company_ctx, user_ctx, founder_ctx = await asyncio.gather(
+        fetch_namespace_context(
+            "company_global_wisdom",
+            "What are our coding best practices?",
+        ),
+        fetch_namespace_context(
+            f"user_{user_id}_memory",
+            "What are this engineer's strengths and weaknesses?",
+        ),
+        _fetch_founder_context(actions),
     )
 
     evaluation_prompt = f"""
 You are the AI Symbiote evaluating engineering habits.
+You have access to the original founder's reasoning and decision frameworks — use them to ground your evaluation in real architectural context, not generic advice.
 
-COMPANY STANDARDS: {company_context or 'None yet.'}
-ENGINEER HISTORY: {user_context or 'New engineer.'}
+FOUNDER CONTEXT: {founder_ctx or 'No founder memories available.'}
+COMPANY STANDARDS: {company_ctx or 'None yet.'}
+ENGINEER HISTORY: {user_ctx or 'New engineer.'}
 
 ACTIONS: {json.dumps(actions, indent=2)}
 

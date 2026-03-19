@@ -4,10 +4,12 @@ from __future__ import annotations
 from typing import Optional
 
 import anthropic
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.config import settings
+from app.dependencies import get_current_engineer
+from app.models import Engineer
 
 router = APIRouter()
 _client: Optional[anthropic.Anthropic] = None
@@ -47,7 +49,10 @@ def get_client() -> anthropic.Anthropic:
 
 
 @router.post("", response_model=ChatResponse)
-async def chat_completion(req: ChatRequest) -> ChatResponse:
+async def chat_completion(
+    req: ChatRequest,
+    _: Engineer = Depends(get_current_engineer),
+) -> ChatResponse:
     client = get_client()
     response = client.messages.create(
         model=req.model,
@@ -65,7 +70,10 @@ async def chat_completion(req: ChatRequest) -> ChatResponse:
 
 
 @router.post("/stream")
-async def chat_stream(req: ChatRequest):
+async def chat_stream(
+    req: ChatRequest,
+    _: Engineer = Depends(get_current_engineer),
+):
     from fastapi.responses import StreamingResponse
 
     client = get_client()

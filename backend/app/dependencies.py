@@ -1,5 +1,5 @@
 """Shared FastAPI dependencies for authentication and database access."""
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,16 +12,18 @@ bearer_scheme = HTTPBearer(auto_error=False)
 
 
 async def get_current_engineer(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db: AsyncSession = Depends(get_db),
 ) -> Engineer:
-    if credentials is None:
+    token = credentials.credentials if credentials is not None else request.cookies.get("symbiote_session")
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required",
         )
 
-    payload = decode_access_token(credentials.credentials)
+    payload = decode_access_token(token)
     subject = payload.get("sub")
     if subject is None:
         raise HTTPException(

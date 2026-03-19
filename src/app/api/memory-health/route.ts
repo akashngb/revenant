@@ -1,13 +1,20 @@
-import { NextResponse } from 'next/server';
-import { getMemoryHealth } from '@/lib/moorchehMemory';
+import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/memory-health — returns all memory nodes with strength/decay data for D3 graph
-export async function GET() {
+import { getMemoryHealth } from "@/lib/moorchehMemory";
+import { requireEngineer } from "@/lib/serverAuth";
+
+export async function GET(request: NextRequest) {
+  const engineer = await requireEngineer(request);
+  if (engineer instanceof NextResponse) {
+    return engineer;
+  }
+
   try {
     const nodes = await getMemoryHealth();
     return NextResponse.json({ nodes });
-  } catch (error: any) {
-    console.error('[MEMORY-HEALTH]', error.message);
-    return NextResponse.json({ nodes: [], error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[MEMORY-HEALTH]", message);
+    return NextResponse.json({ nodes: [], error: "Unable to load memory health" }, { status: 500 });
   }
 }

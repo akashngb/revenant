@@ -2,15 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { nanoClawTools, executeNanoClaw } from "@/lib/nanoClaw";
 import { buildFounderContext, storeInteraction } from "@/lib/moorchehMemory";
+import { requireEngineer } from "@/lib/serverAuth";
+
+const ALLOWED_TOOL_NAMES = new Set(["read_file", "fetch_github_api"]);
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+type ProxyMessage = {
+  role: string;
+  content?: string;
+};
+
 export async function POST(req: NextRequest) {
+  const engineer = await requireEngineer(req);
+  if (engineer instanceof NextResponse) {
+    return engineer;
+  }
+
   try {
-    const body = await req.json();
-    const { messages } = body;
+    const body = (await req.json()) as { messages?: ProxyMessage[] };
+    const messages = Array.isArray(body.messages) ? body.messages : [];
 
     console.log("[PROXY] Received founder console request");
 
@@ -21,8 +34,8 @@ export async function POST(req: NextRequest) {
     const founderCtx = await buildFounderContext(userMessageContent);
 
     const anthropicMessages = messages
-      .filter((message: any) => message.role !== "system")
-      .map((message: any) => ({
+      .filter((message) => message.role !== "system")
+      .map((message) => ({
         role: message.role === "user" ? "user" as const : "assistant" as const,
         content: message.content || " ",
       }));
@@ -48,11 +61,13 @@ ${founderCtx.formatted}
 For questions about a repository, call \`fetch_github_api\` to inspect file trees, commits, pull requests, branches, or file contents.`;
 
     // Build tool definitions for Claude
-    const claudeTools: Anthropic.Messages.Tool[] = nanoClawTools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      input_schema: tool.input_schema as Anthropic.Messages.Tool.InputSchema,
-    }));
+    const claudeTools: Anthropic.Messages.Tool[] = nanoClawTools
+      .filter((tool) => ALLOWED_TOOL_NAMES.has(tool.name))
+      .map((tool) => ({
+        name: tool.name,
+        description: tool.description,
+        input_schema: tool.input_schema as Anthropic.Messages.Tool.InputSchema,
+      }));
 
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
@@ -67,6 +82,9 @@ For questions about a repository, call \`fetch_github_api\` to inspect file tree
     // Check if Claude wants to use a tool
     const toolUseBlock = response.content.find((block) => block.type === "tool_use");
     if (toolUseBlock && toolUseBlock.type === "tool_use") {
+      if (!ALLOWED_TOOL_NAMES.has(toolUseBlock.name)) {
+        return NextResponse.json({ error: "Tool not allowed" }, { status: 403 });
+      }
       console.log(`[PROXY] Tool execution requested: ${toolUseBlock.name}`);
       const toolResult = await executeNanoClaw(toolUseBlock.name, toolUseBlock.input);
 
@@ -128,7 +146,7 @@ For questions about a repository, call \`fetch_github_api\` to inspect file tree
     storeInteraction(userMessageContent, finalResponseText).catch(() => {});
 
     return NextResponse.json(openAIResponse);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[PROXY] Error:", error);
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 });
   }

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from app.database import get_db
 from app.dependencies import get_current_engineer
@@ -13,6 +13,19 @@ from app.utils.security import create_access_token, hash_password, verify_passwo
 
 router = APIRouter()
 DEFAULT_PROVIDERS = ("github", "discord", "slack")
+SESSION_COOKIE_NAME = "symbiote_session"
+
+
+def set_session_cookie(response: Response, access_token: str) -> None:
+    response.set_cookie(
+        key=SESSION_COOKIE_NAME,
+        value=access_token,
+        httponly=True,
+        secure=settings.app_env != "development",
+        samesite="lax",
+        max_age=settings.jwt_expiration_minutes * 60,
+        path="/",
+    )
 
 
 async def ensure_default_integrations(db: AsyncSession, engineer: Engineer) -> None:
@@ -58,7 +71,11 @@ async def signup(payload: SignupRequest, db: AsyncSession = Depends(get_db)) -> 
 
 
 @router.post("/login", response_model=LoginResponse)
-async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> LoginResponse:
+async def login(
+    payload: LoginRequest,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+) -> LoginResponse:
     result = await db.execute(
         select(Engineer).where(func.lower(Engineer.email) == payload.email.lower())
     )
@@ -67,9 +84,17 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> Lo
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     access_token = create_access_token(str(engineer.id))
+    set_session_cookie(response, access_token)
     return LoginResponse(access_token=access_token, engineer=EngineerSummary.model_validate(engineer))
 
 
 @router.get("/me", response_model=EngineerSummary)
 async def me(current_engineer: Engineer = Depends(get_current_engineer)) -> Engineer:
     return current_engineer
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(response: Response) -> Response:
+    response.delete_cookie(key=SESSION_COOKIE_NAME, path="/", samesite="lax")
+    response.status_code = status.HTTP_204_NO_CONTENT
+    return response

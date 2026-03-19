@@ -53,7 +53,6 @@ class IntegrationStatusItem(BaseModel):
     connected: bool
     connected_at: datetime | None = None
     last_synced: datetime | None = None
-    unified_connection_id: str | None = None
 
 
 class DashboardSummaryResponse(BaseModel):
