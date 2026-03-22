@@ -46,7 +46,7 @@ const fragmentShader = `
 
   void main() {
     vec2 uv = (vUv - 0.5) * vec2(uResolution.x / uResolution.y, 1.0);
-    vec2 pixelGrid = vec2(max(uResolution.x / 9.0, 140.0), max(uResolution.y / 9.0, 88.0));
+    vec2 pixelGrid = vec2(uResolution.x / 2.5, uResolution.y / 2.5);
     vec2 snappedUv = (floor(vUv * pixelGrid) + 0.5) / pixelGrid;
     vec2 p = (snappedUv - 0.5) * vec2(uResolution.x / uResolution.y, 1.0);
 
@@ -58,24 +58,15 @@ const fragmentShader = `
     float broadBands = 0.5 + 0.5 * sin((p.x + p.y * 0.28) * 8.0 + uTime * 0.08);
     float surface = ribMask * mix(0.45, 1.0, broadBands) * arch;
 
-    float voidMask = 1.0 - smoothstep(0.1, 0.42, abs(p.x - 0.26));
-    surface *= 1.0 - voidMask * 0.96;
-
-    float edgeGlow = smoothstep(0.22, 0.02, abs(abs(p.x - 0.26) - 0.28)) * smoothstep(0.95, 0.15, abs(p.y));
-    float haze = smoothstep(0.92, 0.12, abs(p.y)) * smoothstep(-0.1, 1.0, arch);
-
     float heat = 0.5 + 0.5 * sin((p.y * 3.8) + (p.x * 2.4) + uTime * 0.22);
-    vec3 color = palette(surface + edgeGlow * 0.5 + haze * 0.14, heat);
-
-    color += vec3(0.72, 0.43, 0.21) * edgeGlow * 0.55;
-    color += vec3(0.13, 0.07, 0.04) * haze * 0.32;
+    vec3 color = palette(surface, heat);
 
     float grain = hash(floor(vUv * pixelGrid) + floor(uTime * 10.0));
     color *= 0.92 + grain * 0.12;
 
     vec2 cell = fract(vUv * pixelGrid);
-    float gridLine = max(step(0.945, cell.x), step(0.945, cell.y));
-    color *= 1.0 - gridLine * 0.58;
+    float gridLine = max(step(0.97, cell.x), step(0.97, cell.y));
+    color *= 1.0 - gridLine * 0.18;
 
     float scanline = 0.95 + 0.05 * sin(vUv.y * uResolution.y * 1.18 - uTime * 6.5);
     color *= scanline;
@@ -83,7 +74,7 @@ const fragmentShader = `
     float vignette = 1.0 - smoothstep(0.72, 1.28, length(uv * vec2(0.9, 1.0)));
     color *= 0.62 + vignette * 0.38;
 
-    float alpha = clamp(surface * 1.18 + edgeGlow * 0.34 + haze * 0.14, 0.0, 0.88);
+    float alpha = clamp(surface * 1.4, 0.0, 0.88);
     gl_FragColor = vec4(color, alpha);
   }
 `;
