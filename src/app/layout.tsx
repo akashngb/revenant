@@ -11,9 +11,9 @@ const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export const metadata: Metadata = {
-  title: "Revenant - Engineering Memory That Outlives Its Engineers",
+  title: "Revenant — Your Company's Intelligent Memory",
   description:
-    "Revenant captures engineering judgment, builds living company memory, and preserves founder knowledge as an interactive AI mentor your team can actually talk to.",
+    "Revenant is an AI system that lives inside your infrastructure, connects every tool your company uses, and turns scattered knowledge into a single intelligent brain.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
