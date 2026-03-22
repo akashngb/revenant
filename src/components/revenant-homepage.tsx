@@ -23,10 +23,24 @@ const navLinks = [
 ];
 
 const integrations = [
-  { name: "Slack", src: "/slack.png", width: 112, height: 34 },
-  { name: "GitHub", src: "/github.png", width: 112, height: 34 },
-  { name: "Jira", src: "/jira.png", width: 112, height: 34 },
-  { name: "Gmail", src: "/gmail.webp", width: 112, height: 34 },
+  { name: "GitHub", src: "/github.png", width: 148, height: 34 },
+  { name: "Jira", src: "/jira.svg", width: 132, height: 34 },
+  { name: "GitLab", src: "/gitlab.svg", width: 132, height: 34 },
+  { name: "Slack", src: "/slack.png", width: 148, height: 34 },
+  { name: "Gmail", src: "/gmail.svg", width: 132, height: 34 },
+  { name: "Google Calendar", src: "/googlecalendar.svg", width: 156, height: 34 },
+  { name: "Asana", src: "/asana.svg", width: 132, height: 34 },
+  { name: "Discord", src: "/discord.svg", width: 132, height: 34 },
+  { name: "Figma", src: "/figma.svg", width: 132, height: 34 },
+  { name: "HubSpot", src: "/hubspot.svg", width: 144, height: 34 },
+  { name: "Linear", src: "/linear.svg", width: 132, height: 34 },
+  { name: "PostHog", src: "/posthog.svg", width: 144, height: 34 },
+  { name: "Salesforce", src: "/salesforce.svg", width: 152, height: 34 },
+  { name: "Snowflake", src: "/snowflake.svg", width: 152, height: 34 },
+  { name: "Stripe", src: "/stripe.svg", width: 132, height: 34 },
+  { name: "Supabase", src: "/supabase.svg", width: 144, height: 34 },
+  { name: "Trello", src: "/trello.svg", width: 132, height: 34 },
+  { name: "Zendesk", src: "/zendesk.svg", width: 148, height: 34 },
 ];
 
 const pillars = [
@@ -110,13 +124,68 @@ const reveal = {
 
 function Nav() {
   const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const updateNavState = () => {
+      setIsVisible(window.scrollY > 24);
+
+      const probe = document.elementFromPoint(window.innerWidth / 2, Math.min(96, window.innerHeight - 1));
+      const section = probe?.closest("[data-nav-theme]");
+      const nextTheme = section?.getAttribute("data-nav-theme");
+
+      setTheme(nextTheme === "light" ? "light" : "dark");
+    };
+
+    updateNavState();
+    window.addEventListener("scroll", updateNavState, { passive: true });
+    window.addEventListener("resize", updateNavState);
+
+    return () => {
+      window.removeEventListener("scroll", updateNavState);
+      window.removeEventListener("resize", updateNavState);
+    };
+  }, []);
+
+  const hasChrome = isVisible || open;
+  const isLight = theme === "light";
+  const headerClasses = hasChrome
+    ? isLight
+      ? "border-black/10 bg-white/95 text-black backdrop-blur-md"
+      : "border-white/10 bg-[#161616]/92 text-white backdrop-blur-md"
+    : "border-transparent bg-transparent text-white";
+  const linkClasses = hasChrome
+    ? isLight
+      ? "text-black hover:text-black/60"
+      : "text-white hover:text-white/65"
+    : "text-white hover:text-white/65";
+  const secondaryLinkClasses = hasChrome
+    ? isLight
+      ? "text-black/60 hover:text-black"
+      : "text-white/60 hover:text-white"
+    : "text-white/60 hover:text-white";
+  const primaryButtonClasses = hasChrome
+    ? isLight
+      ? "bg-black text-white hover:bg-black/85"
+      : "bg-white text-black hover:bg-white/90"
+    : "bg-white text-black hover:bg-white/90";
+  const logoMarkClasses = hasChrome
+    ? isLight
+      ? "bg-black text-white"
+      : "bg-white text-black"
+    : "bg-white text-black";
 
   return (
-    <header className="fixed top-0 left-0 z-50 flex w-full flex-col items-center border-b border-black/10 bg-white p-2 text-black transition-[background-color,border-color,color,translate] duration-300 md:top-4 md:left-1/2 md:w-[calc(100%-2rem)] md:max-w-[1240px] md:-translate-x-1/2 md:border md:px-2 md:py-[8px]">
+    <header
+      className={`fixed top-0 left-0 z-50 flex w-full flex-col items-center border-b p-2 transition-[background-color,border-color,color,opacity,transform] duration-300 md:top-4 md:left-1/2 md:w-[calc(100%-2rem)] md:max-w-[1240px] md:-translate-x-1/2 md:border md:px-2 md:py-[8px] ${headerClasses} ${
+        hasChrome ? "translate-y-0 opacity-100" : "translate-y-0 opacity-100"
+      }`}
+    >
       <div className="w-full">
         <nav className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3 px-2 font-ui-mono text-sm tracking-[-0.28px]">
-            <span className="flex size-6 items-center justify-center rounded-full bg-black text-white">
+            <span className={`flex size-6 items-center justify-center rounded-full transition-colors duration-300 ${logoMarkClasses}`}>
               <BrainCircuit size={14} />
             </span>
             <span className="font-medium uppercase">REVENANT</span>
@@ -127,7 +196,7 @@ function Nav() {
               <a
                 key={link.href}
                 href={link.href}
-                className="px-2 font-ui-mono text-sm tracking-[-0.28px] text-black transition-colors duration-300 hover:text-black/60"
+                className={`px-2 font-ui-mono text-sm tracking-[-0.28px] transition-colors duration-300 ${linkClasses}`}
               >
                 {link.label.toUpperCase()}
               </a>
@@ -137,13 +206,13 @@ function Nav() {
           <div className="hidden items-center gap-3 lg:flex">
             <Link
               href="/login"
-              className="px-2 font-ui-mono text-sm tracking-[-0.28px] text-black/60 transition-colors duration-300 hover:text-black"
+              className={`px-2 font-ui-mono text-sm tracking-[-0.28px] transition-colors duration-300 ${secondaryLinkClasses}`}
             >
               LOG IN
             </Link>
             <Link
               href="/signup"
-              className="bg-black px-2 py-1.5 font-ui-mono text-sm tracking-[-0.28px] text-white transition-colors duration-300 hover:bg-black/85"
+              className={`px-2 py-1.5 font-ui-mono text-sm tracking-[-0.28px] transition-colors duration-300 ${primaryButtonClasses}`}
             >
               START PILOT
             </Link>
@@ -160,25 +229,25 @@ function Nav() {
         </nav>
 
         {open ? (
-          <div className="w-full overflow-hidden border-t border-black/10 pt-4 lg:hidden">
+          <div className={`w-full overflow-hidden border-t pt-4 lg:hidden ${isLight ? "border-black/10" : "border-white/10"}`}>
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="px-2 py-2 font-ui-mono text-sm tracking-[-0.28px] text-black"
+                  className={`px-2 py-2 font-ui-mono text-sm tracking-[-0.28px] ${hasChrome ? (isLight ? "text-black" : "text-white") : "text-white"}`}
                   onClick={() => setOpen(false)}
                 >
                   {link.label.toUpperCase()}
                 </a>
               ))}
               <div className="mt-2 flex items-center gap-3">
-                <Link href="/login" className="px-2 font-ui-mono text-sm tracking-[-0.28px] text-black/60">
+                <Link href="/login" className={`px-2 font-ui-mono text-sm tracking-[-0.28px] ${secondaryLinkClasses}`}>
                   LOG IN
                 </Link>
                 <Link
                   href="/signup"
-                  className="bg-black px-2 py-1.5 font-ui-mono text-sm tracking-[-0.28px] text-white"
+                  className={`px-2 py-1.5 font-ui-mono text-sm tracking-[-0.28px] ${primaryButtonClasses}`}
                 >
                   START PILOT
                 </Link>
@@ -192,42 +261,47 @@ function Nav() {
 }
 
 function LogoMarquee() {
-  const items = [...integrations, ...integrations];
+  const items = integrations;
 
   return (
-    <div id="integrations" className="relative z-10 w-screen invert md:mt-4">
-      <div className="flex w-full items-center justify-center">
+    <div id="integrations" className="relative z-10 w-full md:mt-4">
+      <div className="relative flex w-full items-center justify-center invert">
         <div
           className="logoloop rev-logoloop w-full max-w-[800px] overflow-hidden px-4 py-[14px] grayscale"
           style={{
-            ["--logoloop-gap" as string]: "64px",
+            ["--logoloop-gap" as string]: "36px",
             ["--logoloop-logoHeight" as string]: "26px",
-            maskImage: "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
+            maskImage: "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%)",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%)",
           }}
         >
           <div className="logoloop__track">
             {[0, 1].map((copy) => (
               <ul key={copy} className="logoloop__list" role="list" aria-hidden={copy === 1 ? true : undefined}>
                 {items.map((item, index) => (
-                  <li key={`${item.name}-${copy}-${index}`} className="logoloop__item" role="listitem">
+                  <li
+                    key={`${item.name}-${copy}-${index}`}
+                    className="logoloop__item"
+                    role="listitem"
+                    style={{ width: `${item.width}px` }}
+                  >
                     <Image
                       src={item.src}
                       alt={item.name}
                       width={item.width}
                       height={item.height}
                       className="w-auto object-contain"
-                      style={{ height: item.height > 30 ? "34px" : item.name === "Jira" ? "25px" : "30px" }}
+                      style={{ height: "30px" }}
                     />
                   </li>
                 ))}
               </ul>
             ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
@@ -319,7 +393,7 @@ function OrbDemo() {
   }, [isInView, scenarioIdx, runScenario]);
 
   return (
-    <div ref={sectionRef} className="relative z-10 mt-10 w-full max-w-[1240px] border-t border-white/[0.08] px-4 pt-10 lg:px-0">
+    <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-[1240px] px-4 lg:px-0">
       <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
         {/* Orb */}
         <div className="flex flex-col items-center gap-6">
@@ -449,49 +523,85 @@ export function RevenantHomepage() {
       <Nav />
 
       <main className="overflow-hidden">
-        <section className="rev-hero-grid rev-noise relative flex min-h-dvh flex-col items-center overflow-hidden bg-[#0f0f0f] pt-[60px] md:pt-0">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] md:h-[700px] lg:h-[780px]">
+        <section
+          data-nav-theme="dark"
+          className="rev-hero-grid rev-noise relative overflow-hidden bg-[#120d09] px-3 pt-[40px] md:px-5 md:pt-[48px]"
+        >
+          <div className="pointer-events-none absolute inset-0">
             <RevenantHeroCanvas />
           </div>
-          <div className="relative mx-auto flex w-full max-w-[1240px] flex-1 flex-col items-center justify-center gap-0 px-0 pt-0 md:flex-none md:justify-start md:gap-10 md:px-4 md:pt-[120px] md:pb-24 lg:pt-[160px]">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={reveal}
-              className="relative z-10 flex flex-col items-center gap-5 px-5 pb-6 text-center md:gap-6 md:px-0"
-            >
-              <div className="flex flex-col items-center gap-3 md:gap-4">
-                <h1 className="font-display text-4xl leading-[1.15] text-white md:whitespace-nowrap md:text-5xl md:leading-[0.87] lg:text-[64px]">
-                  Your team ships
-                  <br className="md:hidden" /> what to do.
-                </h1>
-                <p className="font-display text-4xl leading-[0.95] text-white md:whitespace-nowrap md:text-5xl md:leading-[0.87] lg:text-[64px]">
-                  Revenant keeps the why.
-                </p>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[14vh] bg-[linear-gradient(180deg,rgba(18,13,9,0)_0%,rgba(18,13,9,0.08)_24%,rgba(18,13,9,0.34)_60%,rgba(18,13,9,0.72)_100%)]" />
+          <div className="relative mx-auto flex min-h-[min(640px,calc(100dvh-40px))] w-full max-w-[1480px] flex-col justify-between pb-4 md:min-h-[min(680px,calc(100dvh-48px))] md:pb-5">
+            <div className="grid flex-1 grid-cols-1 gap-6 pt-0 pb-4 lg:grid-cols-12 lg:grid-rows-[auto_auto] lg:gap-y-0 lg:pt-1 lg:pb-4">
+              <div className="order-1 flex items-end lg:col-span-8 lg:row-start-1">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={reveal}
+                  className="max-w-[980px]"
+                >
+                  <p className="mb-5 font-ui-mono text-[11px] uppercase tracking-[0.18em] text-[#f5ecdf]/62 md:mb-7">
+                    Institutional memory for engineering teams
+                  </p>
+                  <h1 className="font-display text-[21vw] leading-[0.88] tracking-[-0.06em] text-[#f8efe2] sm:text-[17vw] lg:text-[10.2rem] xl:text-[12.5rem]">
+                    Revenant
+                    <br />
+                    remembers.
+                  </h1>
+                </motion.div>
               </div>
-              <p className="max-w-[540px] text-center text-base leading-[1.4] text-white/50 md:text-lg md:leading-[1.2]">
-                Capture the rationale behind pull requests, incidents, tickets, and chat threads, then turn it into source-grounded engineering memory.
-              </p>
-            </motion.div>
 
-            <div className="relative z-10 px-5 pb-14 md:px-0 md:pb-8">
-              <Link
-                href="/signup"
-                className="relative z-10 bg-white px-4 py-2.5 font-ui-mono text-sm tracking-[-0.28px] text-black transition-colors hover:bg-white/90"
-              >
-                START PILOT
-              </Link>
+              <div className="order-2 flex items-start lg:col-span-4 lg:row-start-1 lg:pl-8">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  custom={0.15}
+                  variants={reveal}
+                  className="max-w-[360px] border-l border-[#efe4d2]/25 lg:mt-[8.5rem] lg:pb-8 lg:pl-8"
+                >
+                  <p className="text-[clamp(1.25rem,2.5vw,2.45rem)] leading-[0.92] tracking-[-0.04em] text-[#f5ecdf]">
+                    Preserve the reasoning behind pull requests, incidents, tickets, and team chat before it disappears.
+                  </p>
+                  <p className="mt-5 max-w-[280px] font-ui-mono text-[11px] uppercase tracking-[0.16em] text-[#f5ecdf]/55">
+                    Source-grounded answers for onboarding, architecture recall, and incident recovery.
+                  </p>
+                  <div className="mt-7">
+                    <Link
+                      href="/signup"
+                      className="inline-flex items-center justify-center border border-[#d59a52] bg-[#d59a52] px-4 py-2.5 font-ui-mono text-[11px] uppercase tracking-[0.16em] text-[#120d09] transition-colors hover:bg-[#e5ab62]"
+                    >
+                      Start pilot
+                    </Link>
+                  </div>
+                </motion.div>
+              </div>
+
+              <div className="order-3 hidden lg:col-span-12 lg:row-start-2 lg:block">
+                <div className="grid grid-cols-12">
+                  <div className="col-span-8 border-t border-[#efe4d2]/20" />
+                  <div className="col-span-4 border-t border-[#efe4d2]/20" />
+                </div>
+              </div>
+
+              <div className="order-3 border-t border-[#efe4d2]/20 lg:hidden" />
+              <div className="order-4 lg:hidden">
+                <div className="w-px h-10 bg-[#efe4d2]/25" />
+              </div>
             </div>
 
-            <hr className="mt-4 w-full max-w-[calc(100%-40px)] border-white/10 md:hidden" />
+            <div className="relative z-10 mt-auto pt-1">
+              <LogoMarquee />
+            </div>
+          </div>
+        </section>
 
-            <LogoMarquee />
-
+        <section data-nav-theme="dark" className="bg-[#0f0f0f] px-3 py-14 md:px-5 md:py-18">
+          <div className="mx-auto flex w-full max-w-[1480px] justify-center">
             <OrbDemo />
           </div>
         </section>
 
-        <section id="product" className="bg-[#f6f6f6]">
+        <section id="product" data-nav-theme="light" className="bg-[#f6f6f6]">
           <div className="mx-auto w-full max-w-[1240px] border-x border-black/[0.06] px-4 lg:px-0">
             <div className="flex flex-col gap-8 px-2 py-14 md:py-16">
               <motion.div
@@ -583,7 +693,7 @@ export function RevenantHomepage() {
           </div>
         </section>
 
-        <section id="workflows" className="flex w-full justify-center bg-[#0f0f0f] px-4 py-24 md:px-6">
+        <section id="workflows" data-nav-theme="dark" className="flex w-full justify-center bg-[#0f0f0f] px-4 py-24 md:px-6">
           <div className="w-full max-w-[1240px]">
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-8 px-0">
@@ -692,7 +802,7 @@ export function RevenantHomepage() {
           </div>
         </section>
 
-        <section id="pilot" className="bg-[#f6f6f6]">
+        <section id="pilot" data-nav-theme="light" className="bg-[#f6f6f6]">
           <div className="mx-auto w-full max-w-[1240px] border-x border-black/[0.06]">
             <div className="flex flex-col items-center gap-6 px-6 py-14 text-center md:py-16">
               <h2 className="font-display text-3xl leading-tight text-black md:text-4xl lg:text-5xl">

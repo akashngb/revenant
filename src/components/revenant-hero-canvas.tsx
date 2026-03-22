@@ -26,64 +26,65 @@ const fragmentShader = `
     return fract(p.x * p.y);
   }
 
-  float sideRibbon(vec2 sideUv) {
-    float edge = sideUv.x;
-    float depth = pow(1.0 - clamp(edge, 0.0, 1.0), 1.45);
-
-    float waveA = sin(sideUv.y * 3.4 - uTime * 0.72 + edge * 7.0) * (0.48 - edge * 0.28);
-    float waveB = sin(sideUv.y * 6.2 + uTime * 0.43 + edge * 10.0) * (0.22 - edge * 0.12);
-    float waveC = cos(sideUv.y * 2.1 - uTime * 0.31 + edge * 4.4) * (0.62 - edge * 0.38);
-
-    float bandA = smoothstep(0.28, 0.02, abs(sideUv.y + waveA));
-    float bandB = smoothstep(0.22, 0.01, abs(sideUv.y - 0.45 + waveB));
-    float bandC = smoothstep(0.22, 0.01, abs(sideUv.y + 0.62 + waveC));
-    float bandD = smoothstep(0.25, 0.015, abs(sideUv.y - 0.9 + waveA * 0.65));
-
-    return max(max(bandA, bandB), max(bandC, bandD)) * depth;
+  vec2 rotate(vec2 p, float a) {
+    float c = cos(a);
+    float s = sin(a);
+    return mat2(c, -s, s, c) * p;
   }
 
-  vec3 palette(float signal, float glow) {
-    vec3 ember = vec3(0.21, 0.08, 0.02);
-    vec3 copper = vec3(0.66, 0.29, 0.08);
-    vec3 gold = vec3(0.98, 0.79, 0.34);
-    vec3 sand = vec3(0.93, 0.83, 0.63);
+  vec3 palette(float lightness, float heat) {
+    vec3 shadow = vec3(0.07, 0.045, 0.03);
+    vec3 clay = vec3(0.29, 0.15, 0.08);
+    vec3 copper = vec3(0.60, 0.31, 0.14);
+    vec3 sand = vec3(0.92, 0.84, 0.72);
 
-    vec3 ramp = mix(ember, copper, smoothstep(0.08, 0.46, signal));
-    ramp = mix(ramp, gold, smoothstep(0.42, 0.82, signal));
-    ramp = mix(ramp, sand, smoothstep(0.82, 1.0, glow));
+    vec3 ramp = mix(shadow, clay, smoothstep(0.08, 0.38, lightness));
+    ramp = mix(ramp, copper, smoothstep(0.24, 0.74, lightness + heat * 0.18));
+    ramp = mix(ramp, sand, smoothstep(0.76, 1.02, lightness + heat * 0.1));
     return ramp;
   }
 
   void main() {
-    vec2 cells = vec2(max(uResolution.x / 7.0, 120.0), max(uResolution.y / 7.0, 90.0));
-    vec2 gridUv = (floor(vUv * cells) + 0.5) / cells;
-    vec2 local = vec2(gridUv.x, (gridUv.y - 0.5) * 2.0);
+    vec2 uv = (vUv - 0.5) * vec2(uResolution.x / uResolution.y, 1.0);
+    vec2 pixelGrid = vec2(max(uResolution.x / 9.0, 140.0), max(uResolution.y / 9.0, 88.0));
+    vec2 snappedUv = (floor(vUv * pixelGrid) + 0.5) / pixelGrid;
+    vec2 p = (snappedUv - 0.5) * vec2(uResolution.x / uResolution.y, 1.0);
 
-    vec2 leftUv = vec2(gridUv.x * 2.0, local.y);
-    vec2 rightUv = vec2((1.0 - gridUv.x) * 2.0, local.y);
+    float arch = smoothstep(-1.45, 1.05, p.x + p.y * 0.72);
+    float warp = sin((p.y * 10.5) + arch * 7.0 - uTime * 0.3) * 0.05;
+    float ribs = sin((p.x + p.y * 0.58 + warp) * 40.0 - uTime * 0.55);
+    float ribMask = pow(1.0 - abs(ribs), 5.5);
 
-    float left = sideRibbon(leftUv);
-    float right = sideRibbon(rightUv);
-    float signal = max(left, right);
+    float broadBands = 0.5 + 0.5 * sin((p.x + p.y * 0.28) * 8.0 + uTime * 0.08);
+    float surface = ribMask * mix(0.45, 1.0, broadBands) * arch;
 
-    float edgeFade = smoothstep(0.22, 0.5, abs(gridUv.x - 0.5));
-    float verticalFade = smoothstep(1.15, 0.18, abs(local.y));
-    float centralVoid = smoothstep(0.18, 0.34, abs(gridUv.x - 0.5));
-    float noise = hash(floor(vUv * cells) + floor(uTime * 8.0));
+    float voidMask = 1.0 - smoothstep(0.1, 0.42, abs(p.x - 0.26));
+    surface *= 1.0 - voidMask * 0.96;
 
-    float glow = clamp(signal * edgeFade * verticalFade * centralVoid, 0.0, 1.0);
-    glow *= 0.92 + noise * 0.18;
+    float edgeGlow = smoothstep(0.22, 0.02, abs(abs(p.x - 0.26) - 0.28)) * smoothstep(0.95, 0.15, abs(p.y));
+    float haze = smoothstep(0.92, 0.12, abs(p.y)) * smoothstep(-0.1, 1.0, arch);
 
-    vec3 color = palette(signal, glow) * glow;
+    float heat = 0.5 + 0.5 * sin((p.y * 3.8) + (p.x * 2.4) + uTime * 0.22);
+    vec3 color = palette(surface + edgeGlow * 0.5 + haze * 0.14, heat);
 
-    vec2 cell = fract(vUv * cells);
-    float gridLine = max(step(0.93, cell.x), step(0.93, cell.y));
-    color *= 1.0 - gridLine * 0.72;
+    color += vec3(0.72, 0.43, 0.21) * edgeGlow * 0.55;
+    color += vec3(0.13, 0.07, 0.04) * haze * 0.32;
 
-    float vignette = 1.0 - smoothstep(0.78, 1.18, length((vUv - 0.5) * vec2(1.2, 1.0)));
-    color *= 0.75 + vignette * 0.25;
+    float grain = hash(floor(vUv * pixelGrid) + floor(uTime * 10.0));
+    color *= 0.92 + grain * 0.12;
 
-    gl_FragColor = vec4(color, clamp(glow * 0.96, 0.0, 1.0));
+    vec2 cell = fract(vUv * pixelGrid);
+    float gridLine = max(step(0.945, cell.x), step(0.945, cell.y));
+    color *= 1.0 - gridLine * 0.58;
+
+    float scanline = 0.95 + 0.05 * sin(vUv.y * uResolution.y * 1.18 - uTime * 6.5);
+    color *= scanline;
+
+    float vignette = 1.0 - smoothstep(0.72, 1.28, length(uv * vec2(0.9, 1.0)));
+    color *= 0.62 + vignette * 0.38;
+
+    float alpha = clamp(surface * 1.18 + edgeGlow * 0.34 + haze * 0.14, 0.0, 0.88);
+    gl_FragColor = vec4(color, alpha);
   }
 `;
 
@@ -129,8 +130,9 @@ export function RevenantHeroCanvas() {
       >
         <HeroField />
       </Canvas>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,15,15,0)_0%,rgba(15,15,15,0)_28%,rgba(15,15,15,0.54)_62%,rgba(15,15,15,0.88)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,15,15,0.14)_0%,rgba(15,15,15,0)_22%,rgba(15,15,15,0)_78%,rgba(15,15,15,0.14)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_44%,rgba(18,13,9,0)_0%,rgba(18,13,9,0.16)_28%,rgba(18,13,9,0.68)_74%,rgba(18,13,9,0.94)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,9,7,0.78)_0%,rgba(12,9,7,0.16)_24%,rgba(12,9,7,0)_46%,rgba(12,9,7,0.22)_74%,rgba(12,9,7,0.62)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_58%,rgba(229,171,98,0.1),transparent_24%),radial-gradient(circle_at_84%_34%,rgba(160,96,48,0.08),transparent_28%)] mix-blend-screen" />
     </div>
   );
 }

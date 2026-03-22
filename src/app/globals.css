@@ -172,22 +172,26 @@
   width: max-content;
   user-select: none;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .logoloop__list {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
+  gap: var(--logoloop-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .logoloop__item {
   flex: 0 0 auto;
-  margin-right: var(--logoloop-gap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: var(--logoloop-logoHeight);
   line-height: 1;
-}
-
-.logoloop__item:last-child {
-  margin-right: var(--logoloop-gap);
 }
 
 .logoloop__item img {
@@ -203,7 +207,7 @@
 
 .rev-logoloop .logoloop__track {
   --gap: var(--logoloop-gap);
-  animation: marquee 24s linear infinite;
+  animation: marquee 52s linear infinite;
 }
 
 @keyframes rev-marquee {
@@ -247,11 +251,11 @@
 
 @keyframes marquee {
   0% {
-    transform: translateX(0%);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
