@@ -8,7 +8,7 @@ so they don't appear as live routes, but all code is intact and ready to restore
 
 1. Copy the page file from `src/app/_product/<name>/page.tsx`
    to `src/app/<name>/page.tsx`.
-2. Re-add nav links in `src/components/revenant-homepage.tsx`.
+2. Re-add nav links in `src/components/omniate-homepage.tsx`.
 3. Restore any API routes if needed (they were never removed — see `src/app/api/`).
 
 ---
@@ -75,3 +75,4 @@ Uses Ebbinghaus decay (memory strength degrades over time without reinforcement)
 
 *Archived during landing page rebuild for pre-seed fundraising, March 2026.*
 *Restore when product is ready for design partners / beta users.*
+

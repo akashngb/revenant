@@ -7,7 +7,7 @@ import { requireAdmin } from "@/lib/serverAuth";
 
 const SEMANTIC_MEMORIES = [
   {
-    content: "We chose a microservices architecture over a monolith for Revenant. The core insight was that the memory system, the avatar rendering pipeline, and the integration layer all have wildly different scaling profiles. Memory retrieval needs to be sub-200ms and horizontally scalable. The avatar pipeline is GPU-bound and bursty. Integrations are I/O-bound and need independent retry logic. A monolith would have forced us to scale everything together, which would have been 3x the cost.",
+    content: "We chose a microservices architecture over a monolith for Omniate. The core insight was that the memory system, the avatar rendering pipeline, and the integration layer all have wildly different scaling profiles. Memory retrieval needs to be sub-200ms and horizontally scalable. The avatar pipeline is GPU-bound and bursty. Integrations are I/O-bound and need independent retry logic. A monolith would have forced us to scale everything together, which would have been 3x the cost.",
     metadata: { source_type: 'architecture_decision', source_ref: 'adr:001-microservices', tags: ['architecture', 'microservices', 'scaling'] },
   },
   {
@@ -135,3 +135,4 @@ export async function POST(request: Request) {
     errors: results.errors,
   });
 }
+

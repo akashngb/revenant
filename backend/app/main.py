@@ -1,42 +1,27 @@
-"""FastAPI application entrypoint for the AI Symbiote backend."""
-from __future__ import annotations
+from contextlib import asynccontextmanager
 
-import asyncio
-import logging
-from contextlib import asynccontextmanager, suppress
-
-from fastapi import FastAPI
+import structlog
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import settings
-from app.routers import admin, auth, chat, dashboard, health, integrations, memory, webhooks
-from app.services.scheduler import pull_all_engineer_data
+from app.api.v0 import router as v0_router
+from app.api.v0 import auth as auth_mod, admin as admin_mod, webhooks as webhooks_mod
+from app.core.config import settings
+from app.schemas.common import HealthResponse
 
-logger = logging.getLogger(__name__)
-
-
-async def scheduled_pull() -> None:
-    while True:
-        try:
-            await pull_all_engineer_data()
-        except Exception:  # pragma: no cover - scheduler should keep running in prod
-            logger.exception("Scheduled fallback sync failed")
-        await asyncio.sleep(3600)
+logger = structlog.get_logger()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    task = asyncio.create_task(scheduled_pull())
+    logger.info("omniate_starting", env=settings.app_env)
     yield
-    task.cancel()
-    with suppress(asyncio.CancelledError):
-        await task
+    logger.info("omniate_shutting_down")
 
 
 app = FastAPI(
-    title=settings.app_name,
-    description="Full-stack backend for AI Symbiote habit tracking and memory orchestration.",
-    version="1.0.0",
+    title="Omniate API",
+    version="0.1.0",
     docs_url="/docs" if settings.fastapi_debug else None,
     redoc_url="/redoc" if settings.fastapi_debug else None,
     lifespan=lifespan,
@@ -44,22 +29,29 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins,
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(health.router, tags=["Health"])
-app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
-app.include_router(memory.router, prefix="/api/memory", tags=["Memory"])
-app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
-app.include_router(integrations.router, prefix="/api/integrations", tags=["Integrations"])
-app.include_router(webhooks.router, prefix="/api/webhooks", tags=["Webhooks"])
-app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
-app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+# ── Primary versioned API ────────────────────────────────────
+app.include_router(v0_router)
+
+# ── Backward compat for current frontend (remove after frontend refactor) ──
+# The Next.js rewrites proxy /api/auth/* etc. to the backend at the same path.
+compat_router = APIRouter(prefix="/api")
+compat_router.include_router(auth_mod.router)
+compat_router.include_router(admin_mod.router)
+compat_router.include_router(webhooks_mod.router)
+app.include_router(compat_router)
 
 
-@app.get("/")
-async def root() -> dict[str, str]:
-    return {"service": settings.app_name, "status": "ok"}
+@app.get("/", response_model=HealthResponse)
+async def root():
+    return HealthResponse()
+
+
+@app.get("/health", response_model=HealthResponse)
+async def health():
+    return HealthResponse()

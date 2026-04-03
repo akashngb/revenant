@@ -310,7 +310,7 @@ export function PricingSection() {
           </h2>
           <p className="text-xs lg:text-sm font-mono text-muted-foreground leading-relaxed max-w-md">
             All tiers include zero-config integration, automatic decision capture,
-            and access to the Revenant memory API.
+            and access to the Omniate memory API.
           </p>
         </div>
         <StatusLine />
@@ -339,3 +339,4 @@ export function PricingSection() {
     </section>
   );
 }
+

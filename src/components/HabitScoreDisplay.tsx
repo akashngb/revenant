@@ -44,8 +44,9 @@ export default function HabitScoreDisplay({ score }: HabitScoreDisplayProps) {
         </div>
       </div>
       <p className="max-w-md text-sm leading-6 text-[var(--text-muted)]">
-        Revenant uses this rolling 30-day signal to surface strong patterns, weak patterns, and the activity most likely to be promoted into company memory.
+        Omniate uses this rolling 30-day signal to surface strong patterns, weak patterns, and the activity most likely to be promoted into company memory.
       </p>
     </div>
   );
 }
+

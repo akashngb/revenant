@@ -91,7 +91,7 @@ export default function SignupPage() {
           <h1 className="font-display text-4xl leading-[1.1] text-white md:text-5xl">
             Create your
             <br />
-            Revenant profile.
+            Omniate profile.
           </h1>
           <p className="mt-4 max-w-[380px] text-base leading-[1.4] text-white/50">
             Connect your engineering activity, build a living memory of your habits, and start shipping with context that sticks.
@@ -221,3 +221,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

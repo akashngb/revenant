@@ -258,7 +258,7 @@ export async function buildRichContext(userQuery: string): Promise<string> {
 // ─── Convenience wrappers ───────────────────────────────────────────────────
 export async function storeInteraction(userMessage: string, assistantResponse: string, tags: string[] = []) {
   await store(
-    `User asked: "${userMessage}"\nRevenant responded: "${assistantResponse}"`,
+    `User asked: "${userMessage}"\nOmniate responded: "${assistantResponse}"`,
     { type: 'interaction', tags },
     FOUNDER_NAMESPACES.episodic,
   );
@@ -361,3 +361,4 @@ export const memory = {
   getUserPrefs,
   getMemoryHealth,
 };
+

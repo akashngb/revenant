@@ -20,7 +20,7 @@ const path = require("path");
   console.log(`Found ${slideCount} slides`);
 
   // Print to PDF — 1280x720 slides (16:9)
-  const pdfPath = path.resolve(__dirname, "Revenant-Pitch-Deck.pdf");
+  const pdfPath = path.resolve(__dirname, "Omniate-Pitch-Deck.pdf");
   await page.pdf({
     path: pdfPath,
     width: "1280px",
@@ -33,3 +33,4 @@ const path = require("path");
   console.log(`PDF saved to: ${pdfPath}`);
   await browser.close();
 })();
+

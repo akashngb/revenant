@@ -1,68 +1,88 @@
 services:
-  symbiote-db:
-    image: postgres:16-alpine
-    restart: unless-stopped
+  omniate-db:
+    image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: symbiote
-      POSTGRES_PASSWORD: symbiote
-      POSTGRES_DB: symbiote
+      POSTGRES_USER: omniate
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-omniate}
+      POSTGRES_DB: omniate
     volumes:
-      - symbiote-db-data:/var/lib/postgresql/data
+      - omniate-db-data:/var/lib/postgresql/data
     networks:
       - internal
-
-  symbiote-redis:
-    image: redis:7.2-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omniate"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
+
+  omniate-redis:
+    image: redis:7.2-alpine
     volumes:
       - redis-data:/data
     networks:
       - internal
-
-  revenant_api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: revenant_api
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
-    env_file:
-      - ./.env
+
+  omniate-api:
+    build: ./backend
     environment:
-      - DATABASE_URL=postgresql+asyncpg://symbiote:symbiote@symbiote-db:5432/symbiote
-      - REDIS_URL=redis://symbiote-redis:6379/0
+      DATABASE_URL: postgresql+asyncpg://omniate:${POSTGRES_PASSWORD:-omniate}@omniate-db:5432/omniate
+      REDIS_URL: redis://omniate-redis:6379/0
+      FASTAPI_DEBUG: "false"
+      APP_ENV: production
+    env_file: .env
     depends_on:
-      - symbiote-db
-      - symbiote-redis
+      omniate-db:
+        condition: service_healthy
+      omniate-redis:
+        condition: service_healthy
     networks:
       - internal
+    restart: unless-stopped
 
-  revenant_web:
+  omniate-worker:
+    build: ./backend
+    command: arq app.workers.scheduler.WorkerSettings
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omniate:${POSTGRES_PASSWORD:-omniate}@omniate-db:5432/omniate
+      REDIS_URL: redis://omniate-redis:6379/0
+      APP_ENV: production
+    env_file: .env
+    depends_on:
+      omniate-db:
+        condition: service_healthy
+      omniate-redis:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: unless-stopped
+
+  omniate-web:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: revenant_web
-    restart: unless-stopped
-    expose:
-      - "3000"
-    env_file:
-      - ./.env
+      args:
+        FASTAPI_BASE_URL: http://omniate-api:8000
     environment:
-      # FASTAPI_BASE_URL is baked at build time via Dockerfile ARG (default: http://revenant_api:8000)
-      - VIRTUAL_HOST=astrali.tech,www.astrali.tech
-      - LETSENCRYPT_HOST=astrali.tech,www.astrali.tech
-      - VIRTUAL_PORT=3000
-      - LETSENCRYPT_EMAIL=omarmgmi08@gmail.com
+      FASTAPI_BASE_URL: http://omniate-api:8000
     depends_on:
-      - revenant_api
+      - omniate-api
     networks:
       - internal
       - webnet
+    restart: unless-stopped
 
 volumes:
-  symbiote-db-data:
+  omniate-db-data:
   redis-data:
 
 networks:
   internal:
+    driver: bridge
   webnet:
     external: true

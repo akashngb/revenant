@@ -27,7 +27,7 @@ export function Footer() {
             REVENANT
           </span>
           <span className="text-[10px] font-mono tracking-widest text-muted-foreground">
-            {"(C) 2026 Revenant. Engineering memory that outlives its engineers."}
+            {"(C) 2026 Omniate. Engineering memory that outlives its engineers."}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-6">
@@ -52,3 +52,4 @@ export function Footer() {
     </motion.footer>
   );
 }
+

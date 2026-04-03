@@ -1,31 +1,59 @@
 services:
-  symbiote-db:
-    image: postgres:16-alpine
+  omniate-db:
+    image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: symbiote
-      POSTGRES_PASSWORD: symbiote
-      POSTGRES_DB: symbiote
+      POSTGRES_USER: omniate
+      POSTGRES_PASSWORD: omniate
+      POSTGRES_DB: omniate
     ports:
       - "5432:5432"
     volumes:
-      - symbiote-db-data:/var/lib/postgresql/data
+      - omniate-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omniate"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
-  symbiote-redis:
+  omniate-redis:
     image: redis:7.2-alpine
     ports:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
-  fastapi-brain:
+  omniate-api:
     build: ./backend
     ports:
       - "8000:8000"
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omniate:omniate@omniate-db:5432/omniate
+      REDIS_URL: redis://omniate-redis:6379/0
     depends_on:
-      - symbiote-db
-      - symbiote-redis
+      omniate-db:
+        condition: service_healthy
+      omniate-redis:
+        condition: service_healthy
+
+  omniate-worker:
+    build: ./backend
+    command: arq app.workers.scheduler.WorkerSettings
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omniate:omniate@omniate-db:5432/omniate
+      REDIS_URL: redis://omniate-redis:6379/0
+    depends_on:
+      omniate-db:
+        condition: service_healthy
+      omniate-redis:
+        condition: service_healthy
 
 volumes:
-  symbiote-db-data:
+  omniate-db-data:
   redis-data:

@@ -24,7 +24,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem("revenant-theme") as Theme | null;
+    const stored = localStorage.getItem("omniate-theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
       document.body.classList.toggle("light", stored === "light");
@@ -34,7 +34,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
     setTheme(next);
-    localStorage.setItem("revenant-theme", next);
+    localStorage.setItem("omniate-theme", next);
     document.body.classList.toggle("light", next === "light");
   };
 
@@ -46,3 +46,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     </ThemeContext.Provider>
   );
 }
+

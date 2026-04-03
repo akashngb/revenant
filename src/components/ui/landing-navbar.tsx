@@ -35,9 +35,9 @@ export function LandingNavBar() {
       {/* Brand */}
       <Link href="/" className="flex items-center gap-2 shrink-0">
         <div className="relative w-8 h-8 rounded-lg overflow-hidden">
-          <Image src="/logo.png" alt="Revenant" fill sizes="32px" className="object-contain" />
+          <Image src="/logo.png" alt="Omniate" fill sizes="32px" className="object-contain" />
         </div>
-        <span className="text-[#e8e0d0] font-semibold text-base tracking-tight">Revenant</span>
+        <span className="text-[#e8e0d0] font-semibold text-base tracking-tight">Omniate</span>
       </Link>
 
       {/* Tubelight pill — centered absolutely */}
@@ -142,3 +142,4 @@ export function LandingNavBar() {
     </header>
   );
 }
+

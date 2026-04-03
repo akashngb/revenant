@@ -58,7 +58,7 @@ export function WorkflowDiagram() {
         viewBox="0 0 800 200"
         className="w-full h-auto"
         role="img"
-        aria-label="Workflow diagram showing Revenant memory flow: Slack, GitHub, Jira captured into Revenant, then powering Mentor, Recall, and Plan"
+        aria-label="Workflow diagram showing Omniate memory flow: Slack, GitHub, Jira captured into Omniate, then powering Mentor, Recall, and Plan"
       >
         {/* Left lines from center to left labels */}
         {LEFT_LABELS.map((_, i) => {
@@ -240,3 +240,4 @@ export function WorkflowDiagram() {
     </div>
   );
 }
+

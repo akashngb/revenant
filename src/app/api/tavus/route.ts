@@ -58,7 +58,7 @@ ${founderCtx.formatted}`;
         method: "POST",
         headers,
         body: JSON.stringify({
-          persona_name: "Revenant Founder Mentor",
+          persona_name: "Omniate Founder Mentor",
           system_prompt: founderSystemPrompt,
           default_replica_id: replicaId,
         }),
@@ -107,7 +107,7 @@ When the junior asks a question, search your memory for the most relevant story,
       body: JSON.stringify({
         replica_id: replicaId,
         persona_id: personaId,
-        conversation_name: "Revenant Founder Session",
+        conversation_name: "Omniate Founder Session",
         conversational_context: conversationalContext,
         properties: {
           max_call_duration: 3600,
@@ -139,3 +139,4 @@ When the junior asks a question, search your memory for the most relevant story,
     return NextResponse.json({ error: "Unable to start Tavus session" }, { status: 500 });
   }
 }
+

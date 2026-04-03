@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="public/logo.svg" alt="Revenant Logo" width="80" />
+  <img src="public/logo.svg" alt="Omniate Logo" width="80" />
 </p>
 
-<h1 align="center">Revenant</h1>
+<h1 align="center">Omniate</h1>
 
 <p align="center">
   <strong>The AI Symbiote for Engineering Teams</strong>
 </p>
 
 <p align="center">
-  Revenant turns day-to-day engineering activity into real-time coaching, personal memory, and company-wide best practices.
+  Omniate turns day-to-day engineering activity into real-time coaching, personal memory, and company-wide best practices.
 </p>
 
 <p align="center">
@@ -25,9 +25,9 @@
 
 ## Overview
 
-> This README describes the target system architecture for Revenant and should be treated as the source of truth for the platform shape.
+> This README describes the target system architecture for Omniate and should be treated as the source of truth for the platform shape.
 
-Revenant is an engineering habit intelligence system built around two parallel loops:
+Omniate is an engineering habit intelligence system built around two parallel loops:
 
 - a fast path that gives immediate contextual help while work is happening
 - a batch path that evaluates behavior over short windows, labels habits, and promotes strong patterns into shared company memory
@@ -154,7 +154,7 @@ The Django frontend exposes the results through:
 
 ## Memory Model
 
-Revenant keeps two operational memory scopes in Moorcheh:
+Omniate keeps two operational memory scopes in Moorcheh:
 
 | Namespace | Purpose | Examples |
 |:----------|:--------|:---------|

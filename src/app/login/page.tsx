@@ -76,7 +76,7 @@ export default function LoginPage() {
           <h1 className="font-display text-4xl leading-[1.1] text-white md:text-5xl">
             Return to
             <br />
-            Revenant control.
+            Omniate control.
           </h1>
           <p className="mt-4 max-w-[380px] text-base leading-[1.4] text-white/50">
             Sign in to review engineer signals, inspect promoted memory, and open the founder mentor console.
@@ -169,3 +169,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

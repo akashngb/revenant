@@ -122,7 +122,7 @@ function MemoryNetworkViz() {
       viewBox="0 0 560 360"
       className="w-full h-full"
       role="img"
-      aria-label="Revenant memory network: integrations feeding into memory core, powering mentor and recall"
+      aria-label="Omniate memory network: integrations feeding into memory core, powering mentor and recall"
     >
       {/* Grid lines */}
       {Array.from({ length: 24 }).map((_, i) => (
@@ -448,3 +448,4 @@ export function AboutSection() {
     </section>
   );
 }
+

@@ -51,7 +51,7 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.45, ease }}
           className="text-xs lg:text-sm text-muted-foreground max-w-md mb-6 leading-relaxed font-mono"
         >
-          Revenant is the memory layer between your senior engineers&apos; judgment
+          Omniate is the memory layer between your senior engineers&apos; judgment
           and your growing team. Automatic capture. Semantic recall. An AI mentor
           your engineers can actually talk to.
         </motion.p>
@@ -81,3 +81,4 @@ export function HeroSection() {
     </section>
   );
 }
+

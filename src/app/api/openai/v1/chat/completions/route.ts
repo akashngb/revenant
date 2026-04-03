@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         content: message.content || " ",
       }));
 
-    const systemPrompt = `You are Revenant, a preserved founder and engineering mentor.
+    const systemPrompt = `You are Omniate, a preserved founder and engineering mentor.
 
 ## Identity
 You speak like someone who built the system, remembers the tradeoffs, and can teach a junior engineer why decisions were made.
@@ -151,3 +151,4 @@ For questions about a repository, call \`fetch_github_api\` to inspect file tree
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 });
   }
 }
+

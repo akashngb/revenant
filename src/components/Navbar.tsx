@@ -77,7 +77,7 @@ export default function Navbar() {
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}>
           <div style={{ position: "relative", width: 48, height: 48, flexShrink: 0 }}>
-            <Image src="/logo.png" alt="Revenant" fill style={{ objectFit: "contain" }} />
+            <Image src="/logo.png" alt="Omniate" fill style={{ objectFit: "contain" }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <span
@@ -168,3 +168,4 @@ export default function Navbar() {
     </header>
   );
 }
+

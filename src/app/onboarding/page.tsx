@@ -216,7 +216,7 @@ export default function OnboardingPage() {
             to start capturing context.
           </h1>
           <p className="mt-4 max-w-[460px] text-base leading-[1.4] text-white/50">
-            Revenant watches your commits, pull requests, and team conversations to build a memory of how your team ships. No private messages are stored.
+            Omniate watches your commits, pull requests, and team conversations to build a memory of how your team ships. No private messages are stored.
           </p>
 
           {/* Status messages */}
@@ -313,3 +313,4 @@ export default function OnboardingPage() {
     </div>
   );
 }
+

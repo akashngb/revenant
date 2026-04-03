@@ -426,7 +426,7 @@ async function fetchGitHubApi({ owner, repo, endpoint, path: apiPath, pat }: any
   const headers: Record<string, string> = {
     'Accept': 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'Revenant-NanoClaw/1.0'
+    'User-Agent': 'Omniate-NanoClaw/1.0'
   };
   if (pat) headers['Authorization'] = `Bearer ${pat}`;
 
@@ -441,3 +441,4 @@ async function fetchGitHubApi({ owner, repo, endpoint, path: apiPath, pat }: any
     return { success: false, error: e.message };
   }
 }
+

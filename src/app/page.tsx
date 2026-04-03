@@ -1,5 +1,6 @@
-import { RevenantHomepage } from "@/components/revenant-homepage";
+import { OmniateHomepage } from "@/components/omniate-homepage";
 
 export default function Page() {
-  return <RevenantHomepage />;
+  return <OmniateHomepage />;
 }
+

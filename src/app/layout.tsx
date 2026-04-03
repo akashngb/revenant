@@ -11,9 +11,9 @@ const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export const metadata: Metadata = {
-  title: "Revenant — Your Company's Intelligent Memory",
+  title: "Omniate — Your Company's Intelligent Memory",
   description:
-    "Revenant is an AI system that lives inside your infrastructure, connects every tool your company uses, and turns scattered knowledge into a single intelligent brain.",
+    "Omniate is an AI system that lives inside your infrastructure, connects every tool your company uses, and turns scattered knowledge into a single intelligent brain.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -57,3 +57,4 @@ export default function RootLayout({
     </html>
   );
 }
+

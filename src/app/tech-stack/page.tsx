@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 
 const steps = [
   {
-    title: "Revenant watches how engineers work",
+    title: "Omniate watches how engineers work",
     desc: "It learns from the work already happening across the team instead of depending on people to remember to write everything down.",
   },
   {
@@ -36,7 +36,7 @@ export default function TechStackPage() {
             <span style={{ color: "#d97706" }}>the impact is not</span>.
           </h1>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: "#6b6456", maxWidth: 720 }}>
-            Revenant does not need a long technical pitch on the surface. What matters is that it learns from great engineers,
+            Omniate does not need a long technical pitch on the surface. What matters is that it learns from great engineers,
             keeps their judgment alive, and makes that judgment available to the people who come after them.
           </p>
         </div>
@@ -60,3 +60,4 @@ export default function TechStackPage() {
     </div>
   );
 }
+
